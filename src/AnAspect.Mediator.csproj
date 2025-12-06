@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>AnAspect.Mediator</PackageId>
+		<Title>High-Performance Mediator with Advanced Pipeline Control</Title>
+		<Version>0.1.0-alpha</Version>
+		<Authors>Pouria Riyahi</Authors>
+		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
+    Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>128x128.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>mediator;cqrs;pipeline;behavior;performance;dotnet</PackageTags>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\assets\icons\128x128.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="Usings.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+	</ItemGroup>
+
+</Project>

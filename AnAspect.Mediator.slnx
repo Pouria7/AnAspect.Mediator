@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Benchmarks/">
+    <Project Path="benchmarks/Main/AnAspect.Mediator.Benchmarks.csproj" Id="5d01cfc6-1c6d-44f9-8fe4-904292394dff" />
+    <Project Path="benchmarks/Scale/AnAspect.Mediator.Benchmarks.Scale.csproj" Id="17a08ec5-b3da-4be7-aeaa-7356d2d01d2b" />
+  </Folder>
+  <Project Path="src/AnAspect.Mediator.csproj" />
+  <Project Path="tests/AnAspect.Mediator.Tests.csproj" Id="93b6c619-44ed-4828-9545-23a2cda4b0ba" />
+</Solution>
