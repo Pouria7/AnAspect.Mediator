@@ -17,6 +17,8 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>mediator;cqrs;pipeline;behavior;performance;dotnet</PackageTags>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 	</PropertyGroup>
 
 	<ItemGroup>
