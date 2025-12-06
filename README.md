@@ -2,7 +2,7 @@
 
 A high-performance mediator implementation for .NET using `ValueTask` for optimized performance and minimal memory allocation.
 
-> ⚠️ \*\*Status\*\*: Early development. Test coverage is ongoing. Not recommended for production use.
+> ⚠️ **Status**: Early development. Test coverage is ongoing. Not recommended for production use.
 
 ## Features
 
@@ -17,13 +17,13 @@ A high-performance mediator implementation for .NET using `ValueTask` for optimi
 
 ## Quick Start
 
-### 1\. Installation
+### 1. Installation
 
 ```bash
 dotnet add package AnAspect.Mediator
 ```
 
-### 2\. Define your requests and handlers
+### 2. Define your requests and handlers
 
 ```csharp
 using AnAspect.Mediator;
@@ -44,28 +44,28 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, UserDto>
 }
 ```
 
-### 3\. Register services
+### 3. Register services
 
 ```csharp
 services.AddMediator(typeof(CreateUserHandler).Assembly);
 ```
 
-### 4\. Use the mediator
+### 4. Use the mediator
 
 ```csharp
 public class UserController
 {
-    private readonly IMediator \_mediator;
+    private readonly IMediator _mediator;
 
     public UserController(IMediator mediator)
     {
-        \_mediator = mediator;
+        _mediator = mediator;
     }
 
     public async Task<UserDto> CreateUser(string name, string email)
     {
         var command = new CreateUserCommand(name, email);
-        return await \_mediator.SendAsync(command);
+        return await _mediator.SendAsync(command);
     }
 }
 ```
@@ -118,7 +118,7 @@ services.AddMediator(cfg =>
     cfg.AddBehavior<GetUserCaching, GetUserQuery, UserDto?>(order: 5);
     
     // Grouped behaviors (applied only when group is active)
-    cfg.AddBehavior<TransactionBehavior>(order: 1, groups: \["admin"]);
+    cfg.AddBehavior<TransactionBehavior>(order: 1, groups: ["admin"]);
 });
 ```
 
@@ -126,19 +126,19 @@ services.AddMediator(cfg =>
 
 ```csharp
 // Skip all pipeline behaviors
-await \_mediator.WithoutPipeline().SendAsync(command);
+await _mediator.WithoutPipeline().SendAsync(command);
 
 // Use specific pipeline group
-await \_mediator.WithPipelineGroup("admin").SendAsync(command);
+await _mediator.WithPipelineGroup("admin").SendAsync(command);
 
 // Exclude specific behavior types
-await \_mediator
+await _mediator
     .ExcludeBehavior<ILoggingBehavior>()
     .ExcludeBehavior<IPerformanceMonitoringBehavior>()
     .SendAsync(command);
 
 // Skip only global behaviors
-await \_mediator.SkipGlobalBehaviors().SendAsync(command);
+await _mediator.SkipGlobalBehaviors().SendAsync(command);
 ```
 
 ### Custom Request Interfaces
@@ -173,31 +173,31 @@ AnAspect.Mediator is engineered for maximum performance and minimal memory alloc
 
 | Method | Mean | Allocated | Performance Advantage |
 |--------|------|-----------|----------------------|
-| \*\*AnAspect (50 handlers)\*\* | \*\*87.66 ns\*\* | \*\*96 B\*\* | ✅ \*\*23% faster\*\* than MediatR<br>✅ \*\*3% faster\*\* than Source Generator |
+| **AnAspect (50 handlers)** | **87.66 ns** | **96 B** | ✅ **23% faster** than MediatR<br>✅ **3% faster** than Source Generator |
 | MediatR (50 handlers) | 114.14 ns | 344 B | Baseline |
 | SourceGenerator (50 handlers) | 90.67 ns | 160 B | - |
-| \*\*AnAspect (100 handlers)\*\* | \*\*88.14 ns\*\* | \*\*96 B\*\* | ✅ \*\*25% faster\*\* than MediatR<br>✅ \*\*19% faster\*\* than Source Generator |
+| **AnAspect (100 handlers)** | **88.14 ns** | **96 B** | ✅ **25% faster** than MediatR<br>✅ **19% faster** than Source Generator |
 | MediatR (100 handlers) | 117.07 ns | 344 B | Baseline |
 | SourceGenerator (100 handlers) | 109.24 ns | 160 B | - |
 
-> \*\*Key Insight\*\*: AnAspect maintains consistent performance even as handler count increases.
+> **Key Insight**: AnAspect maintains consistent performance even as handler count increases.
 
 ### 🏆 Main Performance Comparison
 
 | Method | Mean | Allocated | Performance vs MediatR |
 |--------|------|-----------|------------------------|
-| \*\*AnAspect (No Pipeline)\*\* | \*\*54.92 ns\*\* | \*\*64 B\*\* | 🚀 \*\*1.8x faster\*\* |
+| **AnAspect (No Pipeline)** | **54.92 ns** | **64 B** | 🚀 **1.8x faster** |
 | MediatR (No Pipeline) | 92.60 ns | 240 B | Baseline |
-| \*\*AnAspect (With Pipeline)\*\* | \*\*173.71 ns\*\* | \*\*344 B\*\* | 🚀 \*\*1.3x faster\*\* |
+| **AnAspect (With Pipeline)** | **173.71 ns** | **344 B** | 🚀 **1.3x faster** |
 | MediatR (With Pipeline) | 227.68 ns | 768 B | Baseline |
 
 ### ⚡ Cold Start Performance
 
 | Method | Mean | Allocated | 
 |--------|------|-----------|
-| \*\*AnAspect (No Pipeline)\*\* | \*\*39,525 ns\*\* | \*\*64 B\*\* |
+| **AnAspect (No Pipeline)** | **39,525 ns** | **64 B** |
 | MediatR (No Pipeline) | 56,695 ns | 304 B |
-| \*\*AnAspect (With Pipeline)\*\* | \*\*74,614 ns\*\* | \*\*384 B\*\* |
+| **AnAspect (With Pipeline)** | **74,614 ns** | **384 B** |
 | MediatR (With Pipeline) | 74,402 ns | 832 B |
 
 
