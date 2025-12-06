@@ -1,7 +1,4 @@
 ﻿
-using AnAspect.Mediator.Abstractions;
-using IRequest = AnAspect.Mediator.Abstractions.IRequest;
-
 namespace AnAspect.Mediator.Tests.Core;
 
 
