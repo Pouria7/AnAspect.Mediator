@@ -1,4 +1,4 @@
-﻿using AnAspect.Mediator;
+using AnAspect.Mediator;
 using AnAspect.Mediator.Abstractions;
 using AnAspect.Mediator.Registration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,34 +10,33 @@ public class PipelineTests : IDisposable
 {
     private readonly ServiceProvider _sp;
     private readonly IMediator _mediator;
+    private readonly TestTracker _tracker = new();
 
     public PipelineTests()
     {
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
 
             // Mixed order to test sorting
-            cfg.AddBehavior<LoggingBehavior>(order: 10);
-            cfg.AddBehavior<PerformanceBehavior>(order: 20, lifetime: ServiceLifetime.Transient);
-            cfg.AddBehavior<CreateUserValidation, CreateUserCommand, UserDto>(order: 15);
-            cfg.AddBehavior<GetUserCaching, GetUserQuery, UserDto?>(order: 5);
+            cfg.AddBehavior<TestLoggingBehavior>(order: 10);
+            cfg.AddBehavior<TestPerformanceBehavior>(order: 20, lifetime: ServiceLifetime.Transient);
+            cfg.AddBehavior<TestCreateUserValidation, CreateUserCommand, UserDto>(order: 15);
+            cfg.AddBehavior<TestGetUserCaching, GetUserQuery, UserDto?>(order: 5);
             cfg.AddBehavior<IGlobalValidationBehavior<AnyRequest,AnyResponse>,AnyRequest,AnyResponse>(order: 4, lifetime: ServiceLifetime.Transient);
 
             // Admin group
-            cfg.AddBehavior<TransactionBehavior>(order: 1, groups: ["admin"]);
+            cfg.AddBehavior<TestTransactionBehavior>(order: 1, groups: ["admin"]);
         });
 
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
-        PipelineTracker.Clear();
     }
 
     public void Dispose()
     {
-        PipelineTracker.Clear();
-        GetUserCaching.ClearCache();
         _sp.Dispose();
     }
 
@@ -48,9 +47,9 @@ public class PipelineTests : IDisposable
 
         await _mediator.SendAsync(cmd);
 
-        Assert.Contains(PipelineTracker.Log, e => e.StartsWith("Log:Before"));
-        Assert.Contains(PipelineTracker.Log, e => e.StartsWith("Log:After"));
-        Assert.Contains(PipelineTracker.Log, e => e.StartsWith("Perf:"));
+        Assert.Contains(_tracker.Log, e => e.StartsWith("Log:Before"));
+        Assert.Contains(_tracker.Log, e => e.StartsWith("Log:After"));
+        Assert.Contains(_tracker.Log, e => e.StartsWith("Perf:"));
     }
 
     [Fact]
@@ -60,7 +59,7 @@ public class PipelineTests : IDisposable
 
         await _mediator.SendAsync(cmd);
 
-        Assert.Contains(PipelineTracker.Log, e => e == "Validate:CreateUser");
+        Assert.Contains(_tracker.Log, e => e == "Validate:CreateUser");
     }
 
     [Fact]
@@ -70,7 +69,7 @@ public class PipelineTests : IDisposable
 
         await _mediator.WithoutPipeline().SendAsync(cmd);
 
-        Assert.Empty(PipelineTracker.Log);
+        Assert.Empty(_tracker.Log);
     }
 
     [Fact]
@@ -81,9 +80,9 @@ public class PipelineTests : IDisposable
         await _mediator.SkipGlobalBehaviors()
             .WithPipelineGroup("admin").SendAsync(cmd);
 
-        Assert.Contains(PipelineTracker.Log, e => e == "Tx:Begin");
-        Assert.Contains(PipelineTracker.Log, e => e == "Tx:Commit");
-        Assert.DoesNotContain(PipelineTracker.Log, e => e.StartsWith("Perf:"));
+        Assert.Contains(_tracker.Log, e => e == "Tx:Begin");
+        Assert.Contains(_tracker.Log, e => e == "Tx:Commit");
+        Assert.DoesNotContain(_tracker.Log, e => e.StartsWith("Perf:"));
     }
 
     [Fact]
@@ -93,8 +92,8 @@ public class PipelineTests : IDisposable
 
         await _mediator.ExcludeBehavior<ILoggingBehavior>().SendAsync(cmd);
 
-        Assert.DoesNotContain(PipelineTracker.Log, e => e.StartsWith("Log:"));
-        Assert.Contains(PipelineTracker.Log, e => e.StartsWith("Perf:"));
+        Assert.DoesNotContain(_tracker.Log, e => e.StartsWith("Log:"));
+        Assert.Contains(_tracker.Log, e => e.StartsWith("Perf:"));
     }
 
     [Fact]
@@ -107,9 +106,9 @@ public class PipelineTests : IDisposable
             .ExcludeBehavior<IPerformanceMonitoringBehavior>()
             .SendAsync(cmd);
 
-        Assert.DoesNotContain(PipelineTracker.Log, e => e.StartsWith("Log:"));
-        Assert.DoesNotContain(PipelineTracker.Log, e => e.StartsWith("Perf:"));
-        Assert.Contains(PipelineTracker.Log, e => e == "Validate:CreateUser");
+        Assert.DoesNotContain(_tracker.Log, e => e.StartsWith("Log:"));
+        Assert.DoesNotContain(_tracker.Log, e => e.StartsWith("Perf:"));
+        Assert.Contains(_tracker.Log, e => e == "Validate:CreateUser");
     }
 
     [Fact]
@@ -119,8 +118,8 @@ public class PipelineTests : IDisposable
 
         await _mediator.SendAsync(query);
 
-        Assert.Contains(PipelineTracker.Log, e => e.StartsWith("Cache:"));
-        Assert.DoesNotContain(PipelineTracker.Log, e => e == "Validate:CreateUser");
+        Assert.Contains(_tracker.Log, e => e.StartsWith("Cache:"));
+        Assert.DoesNotContain(_tracker.Log, e => e == "Validate:CreateUser");
     }
 
     [Fact]
@@ -129,12 +128,12 @@ public class PipelineTests : IDisposable
         var id = Guid.NewGuid();
 
         await _mediator.SendAsync(new GetUserQuery(id));
-        Assert.Contains(PipelineTracker.Log, e => e == "Cache:Miss");
+        Assert.Contains(_tracker.Log, e => e == "Cache:Miss");
 
-        PipelineTracker.Clear();
+        _tracker.Clear();
 
         await _mediator.SendAsync(new GetUserQuery(id));
-        Assert.Contains(PipelineTracker.Log, e => e == "Cache:Hit");
+        Assert.Contains(_tracker.Log, e => e == "Cache:Hit");
     }
 
     [Fact]
@@ -153,7 +152,7 @@ public class PipelineTests : IDisposable
 
         await _mediator.SendAsync(cmd);
 
-        var log = PipelineTracker.Log.ToList();
+        var log = _tracker.Log.ToList();
 
         // Order: Log(10) -> Validate(15) -> Perf(20) -> Handler -> Perf:end -> Log:After
         var logBeforeIdx = log.FindIndex(e => e.StartsWith("Log:Before"));

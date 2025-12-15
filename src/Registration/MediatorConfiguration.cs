@@ -34,6 +34,17 @@ public sealed class MediatorConfiguration
     {
         var type = typeof(TBehavior);
 
+        // Check for duplicate: same type with no request/response type (global behavior)
+        if (Behaviors.Any(b => b.Type == type && b.RequestType == null && b.ResponseType == null))
+        {
+            // Already registered, skip duplicate
+            return this;
+        }
+
+        // Normalize empty array to null
+        if (groups is { Length: 0 })
+            groups = null;
+
         Behaviors.Add(new BehaviorConfig(
             type, order, groups,
             IsOpenGeneric: false,
@@ -70,12 +81,28 @@ public sealed class MediatorConfiguration
                 throw new ArgumentException($"Marker behavior {type.FullName} must implement IPipelineBehavior<,>.");
         }
 
+        var requestType = isOpenGeneric ? null : typeof(TRequest);
+        var responseType = isOpenGeneric ? null : typeof(TResponse);
+
+        // Check for duplicate: same type with same request/response types
+        if (Behaviors.Any(b => b.Type == type && 
+                               b.RequestType == requestType && 
+                               b.ResponseType == responseType))
+        {
+            // Already registered, skip duplicate
+            return this;
+        }
+
+        // Normalize empty array to null
+        if (groups is { Length: 0 })
+            groups = null;
+
         Behaviors.Add(new BehaviorConfig(
               type, order, groups,
               MarkerToScan: markerToScan,
               IsOpenGeneric: isOpenGeneric,
-              RequestType: isOpenGeneric ? null : typeof(TRequest),
-              ResponseType: isOpenGeneric ? null : typeof(TResponse),
+              RequestType: requestType,
+              ResponseType: responseType,
               Lifetime: lifetime));
 
         return this;

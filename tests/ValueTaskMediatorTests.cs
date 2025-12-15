@@ -1,4 +1,4 @@
-﻿
+
 using AnAspect.Mediator.Abstractions;
 using AnAspect.Mediator.Registration;
 using AnAspect.Mediator.Tests.Core;
@@ -6,17 +6,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AnAspect.Mediator.Tests;
 
-public class ValueTaskMediatorTests
+public class ValueTaskMediatorTests : IDisposable
 {
-    private readonly IServiceProvider _serviceProvider;
+    private readonly ServiceProvider _serviceProvider;
     private readonly IMediator _mediator;
+    private readonly TestTracker _tracker = new();
 
     public ValueTaskMediatorTests()
     {
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _serviceProvider = services.BuildServiceProvider();
         _mediator = _serviceProvider.GetRequiredService<IMediator>();
+    }
+    
+    public void Dispose()
+    {
+        _serviceProvider?.Dispose();
     }
 
     [Fact]

@@ -19,10 +19,32 @@ public interface ICachingBehavior : IPipelineBehavior<GetUserQuery, UserDto?>;
 
 public static class PipelineTracker
 {
+    private static readonly object _lock = new();
     private static readonly List<string> _log = new();
-    public static IReadOnlyList<string> Log => _log;
-    public static void Add(string entry) => _log.Add(entry);
-    public static void Clear() => _log.Clear();
+    public static IReadOnlyList<string> Log 
+    { 
+        get 
+        { 
+            lock (_lock) 
+            { 
+                return _log.ToList(); // Return a copy to avoid enumeration issues
+            } 
+        } 
+    }
+    public static void Add(string entry) 
+    { 
+        lock (_lock) 
+        { 
+            _log.Add(entry); 
+        } 
+    }
+    public static void Clear() 
+    { 
+        lock (_lock) 
+        { 
+            _log.Clear(); 
+        } 
+    }
 }
 
 // ============================================================================

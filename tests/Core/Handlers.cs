@@ -35,7 +35,7 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, bool>
 
 public class LogMessageHandler : IRequestHandler<LogMessageCommand, Unit>
 {
-    public static string? LastMessage { get; private set; }
+    public static string? LastMessage { get; set; }
 
     public ValueTask<Unit> HandleAsync(LogMessageCommand request, CancellationToken cancellationToken)
     {
