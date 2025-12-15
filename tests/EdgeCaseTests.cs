@@ -34,6 +34,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -48,6 +49,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         // Register assembly but use a request type that has no handler
         services.AddMediator(cfg =>
         {
@@ -72,6 +74,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -88,6 +91,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -110,6 +114,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -132,6 +137,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -153,6 +159,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -174,6 +181,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -195,6 +203,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -214,6 +223,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -240,6 +250,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
         _mediator = _sp.GetRequiredService<IMediator>();
@@ -256,6 +267,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -278,6 +290,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -302,6 +315,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -322,7 +336,9 @@ public class EdgeCaseTests : IDisposable
     public async Task RequestReturningUnit_WorksCorrectly()
     {
         // Arrange
+        LogMessageHandler.LastMessage = null; // Clear static state from other tests
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -345,6 +361,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -365,6 +382,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -392,6 +410,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -422,6 +441,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -446,6 +466,7 @@ public class EdgeCaseTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -466,3 +487,4 @@ public class EdgeCaseTests : IDisposable
         Assert.True(logIdx < perfIdx);
     }
 }
+

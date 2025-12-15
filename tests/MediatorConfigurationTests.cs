@@ -34,6 +34,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange & Act
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker); // Register tracker for DI
         services.AddMediator(typeof(CreateUserHandler).Assembly);
         _sp = services.BuildServiceProvider();
 
@@ -47,6 +48,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange & Act & Assert
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         
         // Empty configuration should throw because no assemblies are registered
         Assert.Throws<ArgumentException>(() => services.AddMediator(cfg => { }));
@@ -57,6 +59,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         
         // Act - Add mediator twice (last one replaces first)
         services.AddMediator(cfg =>
@@ -88,6 +91,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -109,6 +113,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange & Act
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -127,6 +132,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -153,6 +159,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -176,6 +183,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -199,6 +207,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -222,6 +231,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -245,6 +255,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -268,6 +279,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         
         // Act & Assert - Should not throw
         services.AddMediator(cfg =>
@@ -286,6 +298,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -310,6 +323,7 @@ public class MediatorConfigurationTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -324,3 +338,4 @@ public class MediatorConfigurationTests : IDisposable
             await _mediator.SendAsync(new CreateUserCommand("", "test@test.com")));
     }
 }
+

@@ -34,6 +34,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -59,6 +60,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -85,6 +87,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -109,6 +112,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -137,6 +141,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -162,6 +167,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -188,6 +194,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -216,6 +223,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -246,6 +254,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -267,6 +276,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -290,6 +300,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -317,6 +328,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -340,6 +352,7 @@ public class BehaviorRegistryTests : IDisposable
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(_tracker);
         services.AddMediator(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
@@ -363,3 +376,4 @@ public class BehaviorRegistryTests : IDisposable
         Assert.Contains(_tracker.Log, e => e.StartsWith("Perf:")); // Ungrouped, not excluded
     }
 }
+
