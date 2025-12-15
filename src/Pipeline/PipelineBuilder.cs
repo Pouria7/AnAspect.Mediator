@@ -32,13 +32,23 @@ public readonly struct PipelineBuilder
         new(_mediator, _config.WithGroup(groupKey));
 
     /// <summary>
-    /// Exclude behaviors implementing the specified interface.
+    /// Exclude behaviors implementing the specified marker interface.
     /// </summary>
     public PipelineBuilder ExcludeBehavior<TBehavior>() where TBehavior : IPipelineBehavior =>
         new(_mediator, _config.WithExcluded(typeof(TBehavior)));
 
     /// <summary>
-    /// Creates a new pipeline builder that configures whether global behaviors are applied to the pipeline.
+    /// Exclude typed behaviors implementing IPipelineBehavior&lt;TRequest, TResponse&gt;.
+    /// This allows excluding specific typed behaviors by their concrete type.
+    /// </summary>
+    public PipelineBuilder ExcludeTypedBehavior<TBehavior, TRequest, TResponse>()
+        where TBehavior : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : IRequest<TResponse> =>
+        new(_mediator, _config.WithExcludedTyped(typeof(TBehavior)));
+
+    /// <summary>
+    /// Skip global behaviors (behaviors without specific request/response types).
+    /// Typed behaviors will still execute.
     /// </summary>
     public PipelineBuilder SkipGlobalBehaviors(bool value = true) =>
         new(_mediator, _config.WithSkipGlobalBehaviors(value));

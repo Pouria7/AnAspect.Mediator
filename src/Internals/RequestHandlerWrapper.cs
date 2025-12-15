@@ -36,7 +36,7 @@ internal sealed class RequestHandlerWrapperImpl<TRequest, TResponse> : RequestHa
         if (pipelineConfig.SkipPipeline || !this.behaviorRegistry.HasBehaviors)
             return handler.HandleAsync((TRequest)request, cancellationToken);
 
-        var behaviors = this.behaviorRegistry.GetBehaviors(typeof(TRequest), pipelineConfig.GroupKeys, pipelineConfig.ExcludedMarkers, pipelineConfig.SkipGlobalBehaviors, pipelineConfig.OnlyGroups);
+        var behaviors = this.behaviorRegistry.GetBehaviors(typeof(TRequest), pipelineConfig.GroupKeys, pipelineConfig.ExcludedMarkers, pipelineConfig.ExcludedTypedBehaviors, pipelineConfig.SkipGlobalBehaviors, pipelineConfig.OnlyGroups);
 
         if (behaviors.Count == 0)
             return handler.HandleAsync((TRequest)request, cancellationToken);

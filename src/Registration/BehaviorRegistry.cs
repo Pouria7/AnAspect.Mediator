@@ -59,49 +59,53 @@ internal sealed class BehaviorRegistry
         Type requestType,
         string[] groupKeys,
         IReadOnlySet<Type> excludedMarkers,
+        IReadOnlySet<Type> excludedTypedBehaviors,
         bool skipGlobalBehaviors = false,
         bool onlyGroups = false)
     {
         var hasExclusions = excludedMarkers.Count > 0;
+        var hasTypedExclusions = excludedTypedBehaviors.Count > 0;
         var hasGroups = groupKeys is { Length: > 0 };
 
-        // سناریو ۱: فقط ungrouped
+        // Scenario 1: Only ungrouped behaviors
         if (!hasGroups && !onlyGroups)
-            return FilterList(_ungrouped, requestType, excludedMarkers, skipGlobalBehaviors);
+            return FilterList(_ungrouped, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors);
 
-        // سناریو ۲: فقط گروه‌ها (onlyGroups یا بدون ungrouped)
+        // Scenario 2: Only groups (either onlyGroups flag is true or no ungrouped behaviors)
         if (onlyGroups || (!hasGroups && onlyGroups))
         {
             if (!hasGroups)
                 return Array.Empty<BehaviorRegistration>();
 
             if (groupKeys.Length == 1 && _groups.TryGetValue(groupKeys[0], out var single))
-                return FilterList(single, requestType, excludedMarkers, skipGlobalBehaviors: false);
+                return FilterList(single, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors: false);
 
-            // چند گروه - باید sort بشه
-            return CollectAndSort(groupKeys, requestType, excludedMarkers, skipGlobalBehaviors: false);
+            // Multiple groups - needs sorting
+            return CollectAndSort(groupKeys, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors: false);
         }
 
-        // سناریو ۳: ungrouped + گروه‌ها
-        var ungroupedFiltered = FilterList(_ungrouped, requestType, excludedMarkers, skipGlobalBehaviors);
+        // Scenario 3: Ungrouped + groups
+        var ungroupedFiltered = FilterList(_ungrouped, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors);
 
         if (groupKeys.Length == 1 && _groups.TryGetValue(groupKeys[0], out var group))
         {
-            var groupFiltered = FilterList(group, requestType, excludedMarkers, skipGlobalBehaviors: false);
+            var groupFiltered = FilterList(group, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors: false);
             return MergeTwoSorted(ungroupedFiltered, groupFiltered);
         }
 
-        return CollectAndSort(groupKeys, requestType, excludedMarkers, skipGlobalBehaviors, ungroupedFiltered);
+        return CollectAndSort(groupKeys, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors, ungroupedFiltered);
     }
 
     private List<BehaviorRegistration> FilterList(
         IReadOnlyList<BehaviorRegistration> source,
         Type requestType,
         IReadOnlySet<Type> excludedMarkers,
+        IReadOnlySet<Type> excludedTypedBehaviors,
         bool skipGlobalBehaviors)
     {
         var result = new List<BehaviorRegistration>();
         var hasExclusions = excludedMarkers.Count > 0;
+        var hasTypedExclusions = excludedTypedBehaviors.Count > 0;
 
         foreach (var reg in source)
         {
@@ -110,6 +114,8 @@ internal sealed class BehaviorRegistry
             if (!reg.IsGlobal && reg.BehaviorRequestType != requestType)
                 continue;
             if (hasExclusions && HasExcludedMarker(reg, excludedMarkers))
+                continue;
+            if (hasTypedExclusions && excludedTypedBehaviors.Contains(reg.BehaviorType))
                 continue;
             result.Add(reg);
         }
@@ -122,6 +128,7 @@ internal sealed class BehaviorRegistry
         string[] groupKeys,
         Type requestType,
         IReadOnlySet<Type> excludedMarkers,
+        IReadOnlySet<Type> excludedTypedBehaviors,
         bool skipGlobalBehaviors,
         List<BehaviorRegistration>? initial = null)
     {
@@ -130,7 +137,7 @@ internal sealed class BehaviorRegistry
         foreach (var key in groupKeys)
         {
             if (_groups.TryGetValue(key, out var group))
-                result.AddRange(FilterList(group, requestType, excludedMarkers, skipGlobalBehaviors: false));
+                result.AddRange(FilterList(group, requestType, excludedMarkers, excludedTypedBehaviors, skipGlobalBehaviors: false));
         }
 
         if (result.Count > 1)
