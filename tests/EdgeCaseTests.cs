@@ -20,14 +20,10 @@ public class EdgeCaseTests : IDisposable
         _sp?.Dispose();
     }
 
-    private void ConfigureTestServices(Action<MediatorConfiguration> configure)
-    {
-        var services = new ServiceCollection();
-        services.AddSingleton(_tracker);
-        services.AddMediator(configure);
-        _sp = services.BuildServiceProvider();
-        _mediator = _sp.GetRequiredService<IMediator>();
-    }
+
+    // ============================================================================
+    // Unit Tests - Input Validation & Business Logic
+    // ============================================================================
 
     [Fact]
     public async Task SendAsync_NullRequest_ThrowsArgumentNullException()
@@ -43,6 +39,12 @@ public class EdgeCaseTests : IDisposable
         await Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await _mediator.SendAsync<UserDto>(null!));
     }
+
+    // ============================================================================
+    // Integration Tests - DI Container & Infrastructure
+    // NOTE: These tests validate infrastructure behavior (DI, scoping, threading)
+    // Consider moving to a separate IntegrationTests project in the future
+    // ============================================================================
 
     [Fact]
     public async Task SendAsync_RequestWithoutHandler_ThrowsInvalidOperationException()
@@ -68,6 +70,10 @@ public class EdgeCaseTests : IDisposable
     
     // Helper type for testing missing handler
     private record UnknownRequest : IRequest<string>;
+
+    // ============================================================================
+    // Unit Tests - Input Validation & Business Logic (continued)
+    // ============================================================================
 
     [Fact]
     public async Task SendAsync_EmptyGuid_HandlesCorrectly()
@@ -198,9 +204,14 @@ public class EdgeCaseTests : IDisposable
         Assert.Equal(unicodeEmail, result.Email);
     }
 
+    // ============================================================================
+    // Integration Tests - Infrastructure & Concurrency
+    // ============================================================================
+
     [Fact]
     public async Task SendAsync_CancellationToken_CanBePassed()
     {
+        // NOTE: Integration test - validates cancellation token infrastructure
         // Arrange
         var services = new ServiceCollection();
         services.AddSingleton(_tracker);
@@ -221,6 +232,8 @@ public class EdgeCaseTests : IDisposable
     [Fact]
     public async Task SendAsync_MultipleConcurrentRequests_HandlesCorrectly()
     {
+        // NOTE: Stress/Performance test - validates thread-safety with 100 concurrent requests
+        // Consider moving to performance test suite
         // Arrange
         var services = new ServiceCollection();
         services.AddSingleton(_tracker);
@@ -248,6 +261,7 @@ public class EdgeCaseTests : IDisposable
     [Fact]
     public async Task SendAsync_DisposedServiceProvider_ThrowsObjectDisposedException()
     {
+        // NOTE: Integration test - validates DI container lifecycle management
         // Arrange
         var services = new ServiceCollection();
         services.AddSingleton(_tracker);
@@ -261,6 +275,10 @@ public class EdgeCaseTests : IDisposable
         await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
             await _mediator.SendAsync(new CreateUserCommand("Test", "test@test.com")));
     }
+
+    // ============================================================================
+    // Unit Tests - Pipeline Behavior & Error Handling
+    // ============================================================================
 
     [Fact]
     public async Task Behavior_ThrowsException_PropagatesAndSkipsRemaining()
@@ -405,9 +423,14 @@ public class EdgeCaseTests : IDisposable
         Assert.Contains(_tracker.Log, e => e == "Cache:Hit");
     }
 
+    // ============================================================================
+    // Integration Tests - DI Scoping & Lifecycle
+    // ============================================================================
+
     [Fact]
     public async Task MultipleScopes_IsolatedCorrectly()
     {
+        // NOTE: Integration test - validates DI scope isolation
         // Arrange
         var services = new ServiceCollection();
         services.AddSingleton(_tracker);
@@ -439,6 +462,7 @@ public class EdgeCaseTests : IDisposable
     [Fact]
     public async Task ChainedMediatorCalls_WorksCorrectly()
     {
+        // NOTE: Could be integration test - validates workflow orchestration
         // Arrange
         var services = new ServiceCollection();
         services.AddSingleton(_tracker);
