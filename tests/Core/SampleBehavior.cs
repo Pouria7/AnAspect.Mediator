@@ -13,61 +13,43 @@ public interface IPerformanceMonitoringBehavior : IPipelineBehavior;
 public interface ITransactionBehavior : IPipelineBehavior;
 public interface ICachingBehavior : IPipelineBehavior<GetUserQuery, UserDto?>;
 
-// ============================================================================
-// Test Tracker
-// ============================================================================
 
-public static class PipelineTracker
-{
-    private static readonly object _lock = new();
-    private static readonly List<string> _log = new();
-    public static IReadOnlyList<string> Log 
-    { 
-        get 
-        { 
-            lock (_lock) 
-            { 
-                return _log.ToList(); // Return a copy to avoid enumeration issues
-            } 
-        } 
-    }
-    public static void Add(string entry) 
-    { 
-        lock (_lock) 
-        { 
-            _log.Add(entry); 
-        } 
-    }
-    public static void Clear() 
-    { 
-        lock (_lock) 
-        { 
-            _log.Clear(); 
-        } 
-    }
-}
 
 // ============================================================================
-// Global Behaviors
+// Global Behaviors (with DI)
 // ============================================================================
 
 public class LoggingBehavior : ILoggingBehavior
 {
+    private readonly TestTracker _tracker;
+
+    public LoggingBehavior(TestTracker tracker)
+    {
+        _tracker = tracker;
+    }
+
     public async ValueTask<object?> HandleAsync(
         object request,
         RequestContext context,
         PipelineDelegate next,
         CancellationToken ct)
     {
-        PipelineTracker.Add($"Log:Before:{context.RequestType.Name}");
+        _tracker.Add($"Log:Before:{context.RequestType.Name}");
         var result = await next();
-        PipelineTracker.Add($"Log:After:{context.RequestType.Name}");
+        _tracker.Add($"Log:After:{context.RequestType.Name}");
         return result;
     }
 }
 
 public class PerformanceBehavior : IPerformanceMonitoringBehavior
 {
+    private readonly TestTracker _tracker;
+
+    public PerformanceBehavior(TestTracker tracker)
+    {
+        _tracker = tracker;
+    }
+
     public async ValueTask<object?> HandleAsync(
         object request,
         RequestContext context,
@@ -77,46 +59,60 @@ public class PerformanceBehavior : IPerformanceMonitoringBehavior
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var result = await next();
         sw.Stop();
-        PipelineTracker.Add($"Perf:{sw.ElapsedMilliseconds}ms");
+        _tracker.Add($"Perf:{sw.ElapsedMilliseconds}ms");
         return result;
     }
 }
 
 public class TransactionBehavior : ITransactionBehavior
 {
+    private readonly TestTracker _tracker;
+
+    public TransactionBehavior(TestTracker tracker)
+    {
+        _tracker = tracker;
+    }
+
     public async ValueTask<object?> HandleAsync(
         object request,
         RequestContext context,
         PipelineDelegate next,
         CancellationToken ct)
     {
-        PipelineTracker.Add("Tx:Begin");
+        _tracker.Add("Tx:Begin");
         try
         {
             var result = await next();
-            PipelineTracker.Add("Tx:Commit");
+            _tracker.Add("Tx:Commit");
             return result;
         }
         catch
         {
-            PipelineTracker.Add("Tx:Rollback");
+            _tracker.Add("Tx:Rollback");
             throw;
         }
     }
 }
 
 // ============================================================================
-// Typed Behaviors
+// Typed Behaviors (with DI)
 // ============================================================================
 
 public class CreateUserValidation : IValidationBehavior
 {
+    private readonly TestTracker _tracker;
+
+    public CreateUserValidation(TestTracker tracker)
+    {
+        _tracker = tracker;
+    }
+
     public async ValueTask<UserDto> HandleAsync(
         CreateUserCommand request,
         PipelineDelegate<UserDto> next,
         CancellationToken ct)
     {
-        PipelineTracker.Add("Validate:CreateUser");
+        _tracker.Add("Validate:CreateUser");
 
         if (string.IsNullOrWhiteSpace(request.Name))
             throw new ArgumentException("Name is required");
@@ -130,36 +126,47 @@ public class CreateUserValidation : IValidationBehavior
 
 public class GetUserCaching : ICachingBehavior
 {
-    private static readonly Dictionary<Guid, UserDto> _cache = new();
+    private readonly TestTracker _tracker;
+
+    public GetUserCaching(TestTracker tracker)
+    {
+        _tracker = tracker;
+    }
 
     public async ValueTask<UserDto?> HandleAsync(
         GetUserQuery request,
         PipelineDelegate<UserDto?> next,
         CancellationToken ct)
     {
-        if (_cache.TryGetValue(request.Id, out var cached))
+        if (_tracker.TryGetCached(request.Id, out var cached))
         {
-            PipelineTracker.Add("Cache:Hit");
+            _tracker.Add("Cache:Hit");
             return cached;
         }
 
         var result = await next();
 
         if (result != null)
-            _cache[request.Id] = result;
+            _tracker.AddToCache(request.Id, result);
 
-        PipelineTracker.Add("Cache:Miss");
+        _tracker.Add("Cache:Miss");
         return result;
     }
-
-    public static void ClearCache() => _cache.Clear();
 }
 
-public class GlobalGenericValidation<TRequest, TResponse> : IGlobalValidationBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+public class GlobalGenericValidation<TRequest, TResponse> : IGlobalValidationBehavior<TRequest, TResponse> 
+    where TRequest : IRequest<TResponse>
 {
+    private readonly TestTracker _tracker;
+
+    public GlobalGenericValidation(TestTracker tracker)
+    {
+        _tracker = tracker;
+    }
+
     public async ValueTask<TResponse> HandleAsync(TRequest request, PipelineDelegate<TResponse> next, CancellationToken ct)
     {
-        PipelineTracker.Add("Global Validate:");
+        _tracker.Add("Global Validate:");
         return await next();
     }
 }

@@ -21,14 +21,14 @@ public class PipelineTests : IDisposable
             cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
 
             // Mixed order to test sorting
-            cfg.AddBehavior<TestLoggingBehavior>(order: 10);
-            cfg.AddBehavior<TestPerformanceBehavior>(order: 20, lifetime: ServiceLifetime.Transient);
-            cfg.AddBehavior<TestCreateUserValidation, CreateUserCommand, UserDto>(order: 15);
-            cfg.AddBehavior<TestGetUserCaching, GetUserQuery, UserDto?>(order: 5);
+            cfg.AddBehavior<LoggingBehavior>(order: 10);
+            cfg.AddBehavior<PerformanceBehavior>(order: 20, lifetime: ServiceLifetime.Transient);
+            cfg.AddBehavior<CreateUserValidation, CreateUserCommand, UserDto>(order: 15);
+            cfg.AddBehavior<GetUserCaching, GetUserQuery, UserDto?>(order: 5);
             cfg.AddBehavior<IGlobalValidationBehavior<AnyRequest,AnyResponse>,AnyRequest,AnyResponse>(order: 4, lifetime: ServiceLifetime.Transient);
 
             // Admin group
-            cfg.AddBehavior<TestTransactionBehavior>(order: 1, groups: ["admin"]);
+            cfg.AddBehavior<TransactionBehavior>(order: 1, groups: ["admin"]);
         });
 
         _sp = services.BuildServiceProvider();
