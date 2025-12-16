@@ -134,7 +134,7 @@ await _mediator.WithPipelineGroup("admin").SendAsync(command);
 // Exclude specific behavior types
 await _mediator
     .ExcludeBehavior<ILoggingBehavior>()
-    .ExcludeBehavior<IPerformanceMonitoringBehavior>()
+    .ExcludeBehavior<IPerformanceMonitoringBehavior, AnyRequest, AnyResponse>()
     .SendAsync(command);
 
 // Skip only global behaviors
@@ -258,8 +258,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 Made with ❤️ by [Pouria7](https://github.com/Pouria7)
 
-
 ---
 
 **NuGet Package**: [AnAspect.Mediator](https://www.nuget.org/packages/AnAspect.Mediator)
-

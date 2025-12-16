@@ -6,12 +6,17 @@
 		<Nullable>enable</Nullable>
 		<PackageId>AnAspect.Mediator</PackageId>
 		<Title>High-Performance Mediator with Advanced Pipeline Control</Title>
-		<Version>0.1.0-alpha</Version>
+		<Version>0.1.1-alpha</Version>
 		<Authors>Pouria Riyahi</Authors>
 		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
     Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.</Description>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
 		<PackageIcon>128x128.png</PackageIcon>
+		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
+    Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.
+
+    New: Exclude typed behaviors with ExcludeBehavior&lt;TBehavior, TRequest, TResponse&gt; and fluent runtime controls.
+		</Description>
 		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -26,7 +31,7 @@
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
 		</None>
-		<None Include="..\README.md">
+<None Include="..\\README.NuGet.md">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
 		</None>
