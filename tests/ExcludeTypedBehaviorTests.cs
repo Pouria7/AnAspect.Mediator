@@ -314,4 +314,25 @@ public class ExcludeTypedBehaviorTests : IDisposable
         Assert.True(logIdx < perfIdx, "Logging (order 5) should execute before Performance (order 15)");
         Assert.DoesNotContain(log, e => e == "Validate:CreateUser");
     }
+
+    [Fact]
+    public async Task ExcludeTypedBehavior_OpenGeneric_BehaviorNotAffected()
+    {
+        // Arrange
+        ConfigureTestServices(cfg =>
+        {
+            cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
+            cfg.AddBehavior<CreateUserValidation, CreateUserCommand, UserDto>(order: 10);
+            cfg.AddBehavior<IGlobalValidationBehavior<AnyRequest, AnyResponse>, AnyRequest, AnyResponse> (order: 11);
+        });
+
+        // Act
+        await _mediator!
+            .ExcludeBehavior<IGlobalValidationBehavior<AnyRequest, AnyResponse>,AnyRequest,AnyResponse> ()
+            .SendAsync(new CreateUserCommand("Test", "test@test.com"));
+
+        // Assert - CreateUserValidation shoukd execute, but open generic behavior should not
+        Assert.DoesNotContain(_tracker.Log, e => e == "Global Validate:");
+        Assert.Contains(_tracker.Log, e => e == "Validate:CreateUser");
+    }
 }

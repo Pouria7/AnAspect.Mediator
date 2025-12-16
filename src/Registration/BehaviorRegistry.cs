@@ -115,11 +115,29 @@ internal sealed class BehaviorRegistry
                 continue;
             if (hasExclusions && HasExcludedMarker(reg, excludedMarkers))
                 continue;
-            if (hasTypedExclusions && excludedTypedBehaviors.Contains(reg.BehaviorType))
+            if (hasTypedExclusions && excludedTypedBehaviors.Any(x => x == reg.BehaviorType || IsAssignable(reg.BehaviorType, x )))
                 continue;
             result.Add(reg);
         }
         return result;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    bool IsAssignable(Type candidate, Type target)
+    {
+        if (!target.IsGenericTypeDefinition)
+            return target.IsAssignableFrom(candidate);
+
+
+        if (target.IsInterface)
+        {
+            return candidate.GetInterfaces()
+                .Any(i =>
+                    i.IsGenericType &&
+                    i.GetGenericTypeDefinition() == target);
+        }
+
+        return false;
     }
 
 
