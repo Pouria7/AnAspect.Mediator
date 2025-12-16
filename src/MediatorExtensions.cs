@@ -31,10 +31,10 @@ public static class MediatorExtensions
     /// Exclude typed behaviors implementing IPipelineBehavior&lt;TRequest, TResponse&gt;.
     /// This allows excluding specific typed behaviors that don't extend a marker interface.
     /// </summary>
-    public static PipelineBuilder ExcludeTypedBehavior<TBehavior, TRequest, TResponse>(this IMediator mediator)
+    public static PipelineBuilder ExcludeBehavior<TBehavior, TRequest, TResponse>(this IMediator mediator)
         where TBehavior : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse> =>
-        new PipelineBuilder(mediator).ExcludeTypedBehavior<TBehavior, TRequest, TResponse>();
+        new PipelineBuilder(mediator).ExcludeBehavior<TBehavior, TRequest, TResponse>();
 
     /// <summary>
     /// Skip global behaviors (IPipelineBehavior without TRequest/TResponse constraints).

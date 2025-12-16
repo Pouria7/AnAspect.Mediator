@@ -41,10 +41,21 @@ public readonly struct PipelineBuilder
     /// Exclude typed behaviors implementing IPipelineBehavior&lt;TRequest, TResponse&gt;.
     /// This allows excluding specific typed behaviors by their concrete type.
     /// </summary>
-    public PipelineBuilder ExcludeTypedBehavior<TBehavior, TRequest, TResponse>()
+    public PipelineBuilder ExcludeBehavior<TBehavior, TRequest, TResponse>()
         where TBehavior : IPipelineBehavior<TRequest, TResponse>
-        where TRequest : IRequest<TResponse> =>
-        new(_mediator, _config.WithExcludedTyped(typeof(TBehavior)));
+        where TRequest : IRequest<TResponse>
+    {
+        var type = typeof(TBehavior);
+        var isOpenGeneric = typeof(TRequest) == typeof(AnyRequest);
+
+        if (isOpenGeneric)
+        {
+            var interfaces = type.GetInterfaces();
+            if (interfaces.Any(x => x.IsGenericType && x.GetGenericArguments().Length == 2))
+                return new(_mediator, _config.WithExcludedTyped(type.GetGenericTypeDefinition()));
+        }
+        return new(_mediator, _config.WithExcludedTyped(typeof(TBehavior)));
+    }
 
     /// <summary>
     /// Skip global behaviors (behaviors without specific request/response types).
@@ -53,7 +64,7 @@ public readonly struct PipelineBuilder
     public PipelineBuilder SkipGlobalBehaviors(bool value = true) =>
         new(_mediator, _config.WithSkipGlobalBehaviors(value));
 
-    public PipelineBuilder OnlyPipelineGroups(bool value = true)=>
+    public PipelineBuilder OnlyPipelineGroups(bool value = true) =>
         new(_mediator, _config.WithOnlyGroups(value));
 
 

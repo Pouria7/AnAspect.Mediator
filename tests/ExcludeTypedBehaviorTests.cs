@@ -41,7 +41,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         });
 
         // Act - Exclude the typed validation behavior
-        await _mediator!.ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+        await _mediator!.ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Logging should still execute, but validation should not
@@ -61,7 +61,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         });
 
         // Act - Exclude CreateUserValidation only
-        await _mediator!.ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+        await _mediator!.ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Validation should not execute
@@ -87,7 +87,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         });
 
         // Act - Exclude validation and send invalid data (empty name)
-        var result = await _mediator!.ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+        var result = await _mediator!.ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("", "test@test.com"));
 
         // Assert - Should succeed because validation was excluded
@@ -108,7 +108,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         });
 
         // Act - Exclude only the typed behavior
-        await _mediator!.ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+        await _mediator!.ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Global behaviors should still execute
@@ -132,7 +132,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         // Act - Exclude both marker interface behavior and typed behavior
         await _mediator!
             .ExcludeBehavior<ILoggingBehavior>()
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Both should be excluded
@@ -155,7 +155,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
 
         // Act - Exclude multiple typed behaviors
         await _mediator!
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert
@@ -176,13 +176,13 @@ public class ExcludeTypedBehaviorTests : IDisposable
         var id = Guid.NewGuid();
 
         // First call - would normally populate cache
-        await _mediator!.ExcludeTypedBehavior<GetUserCaching, GetUserQuery, UserDto?>()
+        await _mediator!.ExcludeBehavior<GetUserCaching, GetUserQuery, UserDto?>()
             .SendAsync(new GetUserQuery(id));
 
         _tracker.Clear();
 
         // Second call - should NOT hit cache since caching is excluded
-        await _mediator!.ExcludeTypedBehavior<GetUserCaching, GetUserQuery, UserDto?>()
+        await _mediator!.ExcludeBehavior<GetUserCaching, GetUserQuery, UserDto?>()
             .SendAsync(new GetUserQuery(id));
 
         // Assert - Should NOT show cache hit
@@ -219,7 +219,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         // Act - WithoutPipeline should take precedence
         await _mediator!
             .WithoutPipeline()
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Nothing should execute
@@ -241,7 +241,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         // Act - Skip global behaviors but also exclude typed behavior
         await _mediator!
             .SkipGlobalBehaviors()
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Nothing should execute (all globals skipped, typed excluded)
@@ -262,7 +262,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
         // Act
         await _mediator!
             .WithPipelineGroup("admin")
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Group behavior executes, but typed behavior is excluded
@@ -282,7 +282,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
 
         // Act - Exclude for CreateUserCommand but send GetUserQuery
         var result = await _mediator!
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new GetUserQuery(Guid.NewGuid()));
 
         // Assert - Should work fine (CreateUserValidation doesn't apply to GetUserQuery anyway)
@@ -303,7 +303,7 @@ public class ExcludeTypedBehaviorTests : IDisposable
 
         // Act - Exclude middle behavior
         await _mediator!
-            .ExcludeTypedBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+            .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
             .SendAsync(new CreateUserCommand("Test", "test@test.com"));
 
         // Assert - Remaining behaviors execute in correct order
