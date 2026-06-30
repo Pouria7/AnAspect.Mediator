@@ -64,6 +64,16 @@ public sealed class GlobalValidation<TReq, TRes> : IGlobalValidation<TReq, TRes>
 cfg.AddBehavior<IGlobalValidation<AnyRequest, AnyResponse>, AnyRequest, AnyResponse>(order: 4);
 ```
 
+Duplicate handler detection
+
+```csharp
+services.AddMediator(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly);
+    cfg.DuplicateHandlerPolicy = RegistrationDiagnosticPolicy.Throw; // None | Warning (default) | Throw
+});
+```
+
 Performance
 
 - Low allocations, fast dispatch (see benchmarks in repo)
@@ -71,7 +81,7 @@ Performance
 
 Tests
 
-- Added 13 new tests covering typed ExcludeBehavior overload
+- Added tests covering duplicate-handler detection (None / Warning / Throw policies)
 - All tests passing
 
 License: MIT  •  Repo: https://github.com/Pouria7/AnAspect.Mediator

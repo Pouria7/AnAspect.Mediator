@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>AnAspect.Mediator</PackageId>
 		<Title>High-Performance Mediator with Advanced Pipeline Control</Title>
-		<Version>0.1.1-alpha</Version>
+		<Version>0.2.0-alpha</Version>
 		<Authors>Pouria Riyahi</Authors>
 		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
     Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.</Description>
@@ -15,7 +15,7 @@
 		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
     Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.
 
-    New: Exclude typed behaviors with ExcludeBehavior&lt;TBehavior, TRequest, TResponse&gt; and fluent runtime controls.
+    New: Warn or throw on duplicate handler registration via MediatorConfiguration.DuplicateHandlerPolicy (default: Warning).
 		</Description>
 		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
