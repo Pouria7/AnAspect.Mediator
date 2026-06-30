@@ -8,6 +8,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="DuplicateFixtures\**" />
+	  <EmbeddedResource Remove="DuplicateFixtures\**" />
+	  <None Remove="DuplicateFixtures\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="coverlet.collector" Version="6.0.4" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
@@ -17,8 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\src\AnAspect.Mediator.csproj" />
+
 		<ProjectReference Include="DuplicateFixtures\AnAspect.Mediator.Tests.DuplicateFixtures.csproj" />
+
 	</ItemGroup>
 
 	<ItemGroup>
