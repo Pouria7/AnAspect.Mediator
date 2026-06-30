@@ -2,6 +2,30 @@
 
 namespace AnAspect.Mediator.Registration;
 
+/// <summary>
+/// Controls how the mediator reacts to a registration-time diagnostic
+/// (e.g. duplicate handlers, requests with no handler). Shared so future
+/// diagnostics like a "missing handler" check reuse the same options.
+/// </summary>
+public enum RegistrationDiagnosticPolicy
+{
+    /// <summary>
+    /// Ignore the condition silently.
+    /// </summary>
+    None,
+
+    /// <summary>
+    /// Log a warning via <see cref="Microsoft.Extensions.Logging.ILogger"/> but continue. Default.
+    /// </summary>
+    Warning,
+
+    /// <summary>
+    /// Throw during <c>AddMediator</c> (or, for conditions that can only be detected at
+    /// dispatch time, at the moment the condition is hit).
+    /// </summary>
+    Throw
+}
+
 public sealed class MediatorConfiguration
 {
     internal List<Assembly> Assemblies { get; } = new();
@@ -9,6 +33,12 @@ public sealed class MediatorConfiguration
 
     public ServiceLifetime HandlerLifetime { get; set; } = ServiceLifetime.Transient;
     public ServiceLifetime BehaviorLifetime { get; set; } = ServiceLifetime.Singleton;
+
+    /// <summary>
+    /// Controls how duplicate handlers (multiple handlers for the same request type)
+    /// are handled during registration. Defaults to <see cref="RegistrationDiagnosticPolicy.Warning"/>.
+    /// </summary>
+    public RegistrationDiagnosticPolicy DuplicateHandlerPolicy { get; set; } = RegistrationDiagnosticPolicy.Warning;
 
     public MediatorConfiguration RegisterServicesFromAssembly(Assembly assembly)
     {
