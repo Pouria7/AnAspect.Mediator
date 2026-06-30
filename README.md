@@ -221,6 +221,24 @@ services.AddMediator(config =>
 });
 ```
 
+### Duplicate Handler Detection
+
+If reflection scanning finds more than one `IRequestHandler<,>` for the same request type, `MediatorConfiguration.DuplicateHandlerPolicy` controls what happens. It defaults to `Warning`.
+
+```csharp
+services.AddMediator(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(MyHandler).Assembly);
+    cfg.DuplicateHandlerPolicy = RegistrationDiagnosticPolicy.Throw; // None | Warning (default) | Throw
+});
+```
+
+* **`Warning`** (default) — logs via `ILogger` (resolved from DI; silently skipped if no logging is registered) and keeps the first handler scanned.
+* **`Throw`** — throws `DuplicateHandlerException` synchronously inside `AddMediator`, before the service provider is built.
+* **`None`** — ignores the condition; the first handler scanned wins, silently.
+
+`RegistrationDiagnosticPolicy` is shared across registration-time diagnostics, so future checks (e.g. requests with no handler) will reuse the same `None` / `Warning` / `Throw` options.
+
 ##  Why AnAspect.Mediator?
 
 ### 🚀 **Performance First**

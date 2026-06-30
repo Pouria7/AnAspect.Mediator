@@ -34,7 +34,15 @@ public static class MediatorServiceExtensions
         // Register handlers
         var handlers = HandlerScanner.ScanForHandlers(
             config.Assemblies.Distinct(),
-            typeof(IRequestHandler<,>));
+            typeof(IRequestHandler<,>)).ToList();
+
+        var duplicates = FindDuplicateHandlers(handlers);
+
+        if (duplicates.Count > 0 && config.DuplicateHandlerPolicy == RegistrationDiagnosticPolicy.Throw)
+        {
+            var first = duplicates[0];
+            throw new DuplicateHandlerException(first.RequestType, first.HandlerTypes);
+        }
 
         foreach (var handler in handlers)
             RegisterHandler(services, handler, config.HandlerLifetime, registry.HasBehaviors);
@@ -44,6 +52,9 @@ public static class MediatorServiceExtensions
         // Register registry and mediator with factory to resolve behavior instances
         services.AddSingleton(sp =>
         {
+            if (duplicates.Count > 0 && config.DuplicateHandlerPolicy == RegistrationDiagnosticPolicy.Warning)
+                LogDuplicateHandlerWarnings(sp, duplicates);
+
             ResolveBehaviorInstances(registry, sp);
             return registry;
         });
@@ -52,6 +63,36 @@ public static class MediatorServiceExtensions
 
         return services;
     }
+
+    private static List<DuplicateHandlerGroup> FindDuplicateHandlers(List<HandlerInfo> handlers)
+    {
+        return handlers
+            .GroupBy(h => h.RequestType)
+            .Where(g => g.Select(h => h.HandlerType).Distinct().Count() > 1)
+            .Select(g => new DuplicateHandlerGroup(
+                g.Key,
+                g.Select(h => h.HandlerType).Distinct().ToList()))
+            .ToList();
+    }
+
+    private static void LogDuplicateHandlerWarnings(IServiceProvider sp, List<DuplicateHandlerGroup> duplicates)
+    {
+        var logger = (sp.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance)
+            .CreateLogger("AnAspect.Mediator");
+
+        foreach (var duplicate in duplicates)
+        {
+            var handlerNames = string.Join(", ", duplicate.HandlerTypes.Select(t => t.FullName ?? t.Name));
+            logger.LogWarning(
+                "Multiple handlers found for request '{RequestType}': {HandlerTypes}. " +
+                "Only the first handler scanned will be used; set MediatorConfiguration.DuplicateHandlerPolicy " +
+                "to control this behavior.",
+                duplicate.RequestType.FullName ?? duplicate.RequestType.Name,
+                handlerNames);
+        }
+    }
+
+    private readonly record struct DuplicateHandlerGroup(Type RequestType, List<Type> HandlerTypes);
 
     private static void RegisterHandler(
         IServiceCollection services,
