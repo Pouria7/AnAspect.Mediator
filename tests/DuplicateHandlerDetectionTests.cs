@@ -1,6 +1,7 @@
 using AnAspect.Mediator;
 using AnAspect.Mediator.Registration;
 using AnAspect.Mediator.Tests.Core;
+using AnAspect.Mediator.Tests.DuplicateFixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

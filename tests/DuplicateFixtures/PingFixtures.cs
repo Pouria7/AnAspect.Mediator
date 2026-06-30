@@ -1,9 +1,11 @@
 ﻿using AnAspect.Mediator.Abstractions;
 
-namespace AnAspect.Mediator.Tests.Core;
+namespace AnAspect.Mediator.Tests.DuplicateFixtures;
 
-// Dedicated request type used only by duplicate-handler tests, so it doesn't
-// interfere with assertions in other tests that scan the same assembly.
+// This type set lives in its own assembly, isolated from the main test
+// assembly, so that scanning it for duplicate handlers doesn't affect
+// any other test that scans AnAspect.Mediator.Tests (e.g. via
+// typeof(CreateUserHandler).Assembly).
 public record PingCommand(string Message) : IRequest<string>;
 
 public class PingHandlerOne : IRequestHandler<PingCommand, string>
