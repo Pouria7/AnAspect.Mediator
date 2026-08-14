@@ -1,4 +1,6 @@
-﻿/// <summary>
+namespace AnAspect.Mediator;
+
+/// <summary>
 /// Represents a void type since you can't use void as a generic parameter.
 /// </summary>
 public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>

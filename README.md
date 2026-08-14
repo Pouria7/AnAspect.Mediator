@@ -237,7 +237,23 @@ services.AddMediator(cfg =>
 * **`Throw`** — throws `DuplicateHandlerException` synchronously inside `AddMediator`, before the service provider is built.
 * **`None`** — ignores the condition; the first handler scanned wins, silently.
 
-`RegistrationDiagnosticPolicy` is shared across registration-time diagnostics, so future checks (e.g. requests with no handler) will reuse the same `None` / `Warning` / `Throw` options.
+### Request Model & Missing Handler Detection
+
+During IoC registration, assemblies can be scanned for request models (`IRequest` / `IRequest<TResponse>`). If a request model does not have a matching `IRequestHandler<,>` registered, `MediatorConfiguration.MissingHandlerPolicy` (aliased as `UnhandledRequestPolicy`) controls what happens:
+
+```csharp
+services.AddMediator(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(MyHandler).Assembly);
+    cfg.MissingHandlerPolicy = RegistrationDiagnosticPolicy.Throw; // None | Warning (default) | Throw
+});
+```
+
+* **`Warning`** (default) — scans request models and logs a warning via `ILogger` when the mediator is resolved.
+* **`Throw`** — scans request models and throws `MissingHandlerException` synchronously inside `AddMediator`.
+* **`None`** — completely bypasses request model scanning for fastest startup performance.
+
+`RegistrationDiagnosticPolicy` is shared across registration-time diagnostics (`None` / `Warning` / `Throw`).
 
 ##  Why AnAspect.Mediator?
 

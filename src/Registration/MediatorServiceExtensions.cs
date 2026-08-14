@@ -1,4 +1,4 @@
-﻿using AnAspect.Mediator;
+using AnAspect.Mediator;
 using AnAspect.Mediator.Internals;
 using AnAspect.Mediator.Registration;
 
@@ -44,6 +44,18 @@ public static class MediatorServiceExtensions
             throw new DuplicateHandlerException(first.RequestType, first.HandlerTypes);
         }
 
+        List<Type> missingHandlers = [];
+        if (config.MissingHandlerPolicy != RegistrationDiagnosticPolicy.None)
+        {
+            missingHandlers = FindMissingHandlers(config.Assemblies.Distinct(), handlers);
+
+            if (missingHandlers.Count > 0 && config.MissingHandlerPolicy == RegistrationDiagnosticPolicy.Throw)
+            {
+                var first = missingHandlers[0];
+                throw new MissingHandlerException(first);
+            }
+        }
+
         foreach (var handler in handlers)
             RegisterHandler(services, handler, config.HandlerLifetime, registry.HasBehaviors);
 
@@ -55,6 +67,9 @@ public static class MediatorServiceExtensions
             if (duplicates.Count > 0 && config.DuplicateHandlerPolicy == RegistrationDiagnosticPolicy.Warning)
                 LogDuplicateHandlerWarnings(sp, duplicates);
 
+            if (missingHandlers.Count > 0 && config.MissingHandlerPolicy == RegistrationDiagnosticPolicy.Warning)
+                LogMissingHandlerWarnings(sp, missingHandlers);
+
             ResolveBehaviorInstances(registry, sp);
             return registry;
         });
@@ -62,6 +77,15 @@ public static class MediatorServiceExtensions
         services.AddSingleton<IMediator, Mediator>();
 
         return services;
+    }
+
+    private static List<Type> FindMissingHandlers(IEnumerable<Assembly> assemblies, List<HandlerInfo> handlers)
+    {
+        var handledRequestTypes = handlers.Select(h => h.RequestType).ToHashSet();
+        return RequestScanner.ScanForRequests(assemblies)
+            .Distinct()
+            .Where(r => !handledRequestTypes.Contains(r))
+            .ToList();
     }
 
     private static List<DuplicateHandlerGroup> FindDuplicateHandlers(List<HandlerInfo> handlers)
@@ -73,6 +97,21 @@ public static class MediatorServiceExtensions
                 g.Key,
                 g.Select(h => h.HandlerType).Distinct().ToList()))
             .ToList();
+    }
+
+    private static void LogMissingHandlerWarnings(IServiceProvider sp, List<Type> missingHandlers)
+    {
+        var logger = (sp.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance)
+            .CreateLogger("AnAspect.Mediator");
+
+        foreach (var requestType in missingHandlers)
+        {
+            logger.LogWarning(
+                "No handler found for request '{RequestType}'. " +
+                "Ensure an IRequestHandler<,> is registered or set MediatorConfiguration.MissingHandlerPolicy " +
+                "to control this behavior.",
+                requestType.FullName ?? requestType.Name);
+        }
     }
 
     private static void LogDuplicateHandlerWarnings(IServiceProvider sp, List<DuplicateHandlerGroup> duplicates)
