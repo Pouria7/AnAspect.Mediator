@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace AnAspect.Mediator.Tests;
 
+[Collection("StaticState")]
 public class ValueTaskMediatorTests : IDisposable
 {
     private readonly ServiceProvider _serviceProvider;

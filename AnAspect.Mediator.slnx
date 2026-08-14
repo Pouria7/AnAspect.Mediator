@@ -6,6 +6,7 @@
   <Folder Name="/Tests/">
     <Project Path="tests/AnAspect.Mediator.Tests.csproj" Id="93b6c619-44ed-4828-9545-23a2cda4b0ba" />
     <Project Path="tests/DuplicateFixtures/AnAspect.Mediator.Tests.DuplicateFixtures.csproj" />
+    <Project Path="tests/MissingHandlerFixtures/AnAspect.Mediator.Tests.MissingHandlerFixtures.csproj" />
   </Folder>
   <Project Path="src/AnAspect.Mediator.csproj" />
 </Solution>

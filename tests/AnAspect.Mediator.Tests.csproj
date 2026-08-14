@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
@@ -8,9 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="DuplicateFixtures\**" />
-	  <EmbeddedResource Remove="DuplicateFixtures\**" />
-	  <None Remove="DuplicateFixtures\**" />
+	  <Compile Remove="DuplicateFixtures\**;MissingHandlerFixtures\**" />
+	  <EmbeddedResource Remove="DuplicateFixtures\**;MissingHandlerFixtures\**" />
+	  <None Remove="DuplicateFixtures\**;MissingHandlerFixtures\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -23,9 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-
+		<ProjectReference Include="..\src\AnAspect.Mediator.csproj" />
 		<ProjectReference Include="DuplicateFixtures\AnAspect.Mediator.Tests.DuplicateFixtures.csproj" />
-
+		<ProjectReference Include="MissingHandlerFixtures\AnAspect.Mediator.Tests.MissingHandlerFixtures.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

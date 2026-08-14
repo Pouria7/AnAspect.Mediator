@@ -2,6 +2,7 @@ using AnAspect.Mediator;
 using AnAspect.Mediator.Abstractions;
 using AnAspect.Mediator.Registration;
 using AnAspect.Mediator.Tests.Core;
+using AnAspect.Mediator.Tests.MissingHandlerFixtures;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AnAspect.Mediator.Tests;
@@ -9,6 +10,7 @@ namespace AnAspect.Mediator.Tests;
 /// <summary>
 /// Tests for edge cases, error handling, and boundary conditions.
 /// </summary>
+[Collection("StaticState")]
 public class EdgeCaseTests : IDisposable
 {
     private ServiceProvider? _sp;
@@ -61,15 +63,12 @@ public class EdgeCaseTests : IDisposable
         _mediator = _sp.GetRequiredService<IMediator>();
 
         // Create a request type that doesn't have a handler
-        var unknownRequest = new UnknownRequest();
+        var unknownRequest = new OrphanCommand("test");
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(async () =>
             await _mediator.SendAsync(unknownRequest));
     }
-    
-    // Helper type for testing missing handler
-    private record UnknownRequest : IRequest<string>;
 
     // ============================================================================
     // Unit Tests - Input Validation & Business Logic (continued)
