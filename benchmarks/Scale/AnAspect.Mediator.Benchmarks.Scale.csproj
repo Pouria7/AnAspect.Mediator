@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -8,20 +8,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BenchmarkDotNet" Version="0.15.6" />
-		<PackageReference Include="Mediator.Abstractions" Version="3.0.1" />
-		<PackageReference Include="Mediator.SourceGenerator" Version="3.0.1">
+		<PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
+		<PackageReference Include="Mediator.Abstractions" Version="3.0.2" />
+		<PackageReference Include="Mediator.SourceGenerator" Version="3.0.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="MediatR" Version="12.5.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
+		<PackageReference Include="MediatR" Version="14.2.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
+		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.11" />
 	</ItemGroup>
 
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\src\AnAspect.Mediator.csproj" />
-	  <ProjectReference Include="..\Main\AnAspect.Mediator.Benchmarks.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,7 +1,10 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Engines;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using SGIMediator = Mediator.IMediator;
+
+[assembly: MediatorOptions(ServiceLifetime = ServiceLifetime.Transient)]
 
 namespace AnAspect.Mediator.Benchmarks;
 
@@ -40,8 +43,15 @@ public class SourceGeneratorBenchmark
     public ValueTask<BenchmarkResponse> AnAspect_NoPipeline() =>
         _anaspectNoPipeline.SendAsync(_request);
 
+    [Benchmark]
+    public Task<BenchmarkResponse> AnAspect_NoPipeline_AsTask() =>
+        _anaspectNoPipeline.SendAsync(_request).AsTask();
 
     [Benchmark]
     public ValueTask<BenchmarkResponse> SourceGenerator_NoPipeline() =>
         _sourceGeneratorMediator.Send(_request);
+
+    [Benchmark]
+    public Task<BenchmarkResponse> SourceGenerator_NoPipeline_AsTask() =>
+        _sourceGeneratorMediator.Send(_request).AsTask();
 }

@@ -1,4 +1,4 @@
-﻿using AnAspect.Mediator;
+using AnAspect.Mediator;
 using AnAspect.Mediator.Abstractions;
 using AnAspect.Mediator.Registration;
 using BenchmarkDotNet.Attributes;
@@ -29,18 +29,20 @@ public class RequestBenchmark
         _anaspectNoPipeline = noPipeSvc.BuildServiceProvider()
             .GetRequiredService<IMediator>();
 
-        // AnAspect with pipeline
+        // AnAspect with pipeline (2 behaviors)
         var pipeSvc = new ServiceCollection();
         pipeSvc.AddMediator((MediatorConfiguration cfg) =>
         {
             cfg.RegisterServicesFromAssembly(typeof(BenchmarkHandler).Assembly);
-            cfg.AddBehavior<IPipelineBehavior<AnyRequest, AnyResponse>, AnyRequest, AnyResponse>(order: 1);
+            cfg.AddBehavior<NoOpBehavior, BenchmarkRequest, BenchmarkResponse>(order: 1);
+            cfg.AddBehavior<NoOpBehavior2, BenchmarkRequest, BenchmarkResponse>(order: 2);
         });
         _anaspectWithPipeline = pipeSvc.BuildServiceProvider()
             .GetRequiredService<IMediator>();
 
         // MediatR without pipeline
         var mediatrNoPipeSvc = new ServiceCollection();
+        mediatrNoPipeSvc.AddLogging();
         mediatrNoPipeSvc.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssembly(typeof(MediatRBenchmarkHandler).Assembly));
         _mediatrNoPipeline = mediatrNoPipeSvc.BuildServiceProvider()
@@ -48,6 +50,7 @@ public class RequestBenchmark
 
         // MediatR with pipeline
         var mediatrPipeSvc = new ServiceCollection();
+        mediatrPipeSvc.AddLogging();
         mediatrPipeSvc.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(typeof(MediatRBenchmarkHandler).Assembly);
@@ -73,14 +76,25 @@ public class RequestBenchmark
     public ValueTask<BenchmarkResponse> AnAspect_NoPipeline() =>
         _anaspectNoPipeline.SendAsync(_request);
 
+    [Benchmark]
+    public Task<BenchmarkResponse> AnAspect_NoPipeline_AsTask() =>
+        _anaspectNoPipeline.SendAsync(_request).AsTask();
 
     [Benchmark]
     public ValueTask<BenchmarkResponse> AnAspect_SkipPipeline() =>
         _anaspectWithPipeline.WithoutPipeline().SendAsync(_request);
 
     [Benchmark]
+    public Task<BenchmarkResponse> AnAspect_SkipPipeline_AsTask() =>
+        _anaspectWithPipeline.WithoutPipeline().SendAsync(_request).AsTask();
+
+    [Benchmark]
     public ValueTask<BenchmarkResponse> AnAspect_WithPipeline() =>
         _anaspectWithPipeline.SendAsync(_request);
+
+    [Benchmark]
+    public Task<BenchmarkResponse> AnAspect_WithPipeline_AsTask() =>
+        _anaspectWithPipeline.SendAsync(_request).AsTask();
 
 
 }

@@ -165,51 +165,38 @@ public class LogMessageHandler : IRequestHandler<LogMessageCommand>
 }
 ```
 
-##  Performance Benchmarks
+## 📊 Performance Benchmarks
 
-AnAspect.Mediator is engineered for maximum performance and minimal memory allocation. Benchmark results show significant advantages over both MediatR and source generator-based solutions.
+AnAspect.Mediator is engineered for maximum throughput and minimal memory allocation. Benchmarked against **MediatR v14.2.0** and **Mediator.SourceGenerator v3.0.2** on **.NET 10**.
 
-### 🥇 Scalability (50-100 Handlers)
+### 🏆 Core Execution Performance
 
-| Method | Mean | Allocated | Performance Advantage |
-|--------|------|-----------|----------------------|
-| **AnAspect (50 handlers)** | **87.66 ns** | **96 B** | ✅ **23% faster** than MediatR<br>✅ **3% faster** than Source Generator |
-| MediatR (50 handlers) | 114.14 ns | 344 B | Baseline |
-| SourceGenerator (50 handlers) | 90.67 ns | 160 B | - |
-| **AnAspect (100 handlers)** | **88.14 ns** | **96 B** | ✅ **25% faster** than MediatR<br>✅ **19% faster** than Source Generator |
-| MediatR (100 handlers) | 117.07 ns | 344 B | Baseline |
-| SourceGenerator (100 handlers) | 109.24 ns | 160 B | - |
+| Method | Return Type | Mean | Allocated | Performance Advantage |
+| :--- | :--- | :--- | :--- | :--- |
+| `MediatR (No Pipeline)` *(Baseline)* | `Task<T>` | 84.63 ns | 240 B | Baseline |
+| **`AnAspect (No Pipeline)`** | `ValueTask<T>` | **54.21 ns** | **64 B** | 🚀 **36% faster**, **73% less memory** |
+| **`AnAspect (No Pipeline, .AsTask())`** | `Task<T>` | **61.44 ns** | **136 B** | 🚀 **27% faster**, **43% less memory** |
+| `MediatR (With 2 Behaviors)` | `Task<T>` | 195.67 ns | 768 B | Baseline |
+| **`AnAspect (With 2 Behaviors)`** | `ValueTask<T>` | **177.65 ns** | **408 B** | 🚀 **9% faster**, **47% less memory** |
+| **`AnAspect (With 2 Behaviors, .AsTask())`** | `Task<T>` | **175.48 ns** | **480 B** | 🚀 **10% faster**, **37% less memory** |
 
-> **Key Insight**: AnAspect maintains consistent performance even as handler count increases.
+### 🥇 Scalability at Scale (50 & 100 Handlers in DI)
 
-### 🏆 Main Performance Comparison
-
-| Method | Mean | Allocated | Performance vs MediatR |
-|--------|------|-----------|------------------------|
-| **AnAspect (No Pipeline)** | **54.92 ns** | **64 B** | 🚀 **1.8x faster** |
-| MediatR (No Pipeline) | 92.60 ns | 240 B | Baseline |
-| **AnAspect (With Pipeline)** | **173.71 ns** | **344 B** | 🚀 **1.3x faster** |
-| MediatR (With Pipeline) | 227.68 ns | 768 B | Baseline |
+| Method | 50 Handlers | 100 Handlers | Memory Allocated | Scalability Profile |
+| :--- | :--- | :--- | :--- | :--- |
+| **`AnAspect.Mediator`** | **69.96 ns** | **67.70 ns** | **96 B** | 🥇 **Zero degradation ($O(1)$ flat)** |
+| `SourceGenerator` | 81.03 ns | 77.04 ns | 160 B | 14% slower than AnAspect at 100 handlers |
+| `MediatR` | 84.43 ns | 88.67 ns | 344 B | 3.5x higher memory allocation |
 
 ### ⚡ Cold Start Performance
 
-| Method | Mean | Allocated | 
-|--------|------|-----------|
-| **AnAspect (No Pipeline)** | **39,525 ns** | **64 B** |
-| MediatR (No Pipeline) | 56,695 ns | 304 B |
-| **AnAspect (With Pipeline)** | **74,614 ns** | **384 B** |
-| MediatR (With Pipeline) | 74,402 ns | 832 B |
+| Method | Mean | Allocated | Advantage |
+| :--- | :--- | :--- | :--- |
+| **`AnAspect (No Pipeline)`** | **41,573 ns** | **64 B** | ⚡ **Lowest allocations (33,556 ns via .AsTask())** |
+| `MediatR (No Pipeline)` | 42,777 ns | 304 B | Baseline |
+| `SourceGenerator (No Pipeline)` | 65,498 ns | 40 B | Higher JIT initialization |
 
-
-### 📊 Performance Summary
-
-1. **Memory Efficiency**: **72% less allocation** than MediatR
-2. **Scalability**: **Outperforms both MediatR and Source Generator** with 50+ handlers
-3. **Execution Speed**: **1.3x-1.8x faster** than MediatR in production scenarios
-4. **Cold Start**: **35% faster** than Source Generator alternatives
-5. **Pipeline Overhead**: Minimal performance impact with pipeline enabled
-
-* [Performance Results](./benchmarks/README.md)
+> 📖 **Full Benchmark Reports**: For in-depth analysis, pipeline depth scaling (1-5 behaviors), concurrent dispatch, and architectural deep dive, see [Detailed Benchmark Reports](./benchmarks/README.md).
 
 ## Configuration
 
