@@ -1,4 +1,4 @@
-﻿
+
 
 using AnAspect.Mediator;
 using MediatR;
@@ -43,6 +43,30 @@ public class NoOpBehavior2 : AnAspect.Mediator.IPipelineBehavior<BenchmarkReques
     }
 }
 
+public class NoOpBehavior3 : AnAspect.Mediator.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
+{
+    public async ValueTask<BenchmarkResponse> HandleAsync(BenchmarkRequest request, PipelineDelegate<BenchmarkResponse> next, CancellationToken ct)
+    {
+        return await next();
+    }
+}
+
+public class NoOpBehavior4 : AnAspect.Mediator.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
+{
+    public async ValueTask<BenchmarkResponse> HandleAsync(BenchmarkRequest request, PipelineDelegate<BenchmarkResponse> next, CancellationToken ct)
+    {
+        return await next();
+    }
+}
+
+public class NoOpBehavior5 : AnAspect.Mediator.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
+{
+    public async ValueTask<BenchmarkResponse> HandleAsync(BenchmarkRequest request, PipelineDelegate<BenchmarkResponse> next, CancellationToken ct)
+    {
+        return await next();
+    }
+}
+
 public class NoOpGlobalBehavior : IPipelineBehavior
 {
     public async ValueTask<object?> HandleAsync(object request, RequestContext context, PipelineDelegate next, CancellationToken ct)
@@ -72,6 +96,39 @@ public class MediatRNoOpBehavior : MediatR.IPipelineBehavior<BenchmarkRequest, B
 }
 
 public class MediatRNoOpBehavior2 : MediatR.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
+{
+    public async Task<BenchmarkResponse> Handle(
+        BenchmarkRequest request,
+        RequestHandlerDelegate<BenchmarkResponse> next,
+        CancellationToken cancellationToken)
+    {
+        return await next();
+    }
+}
+
+public class MediatRNoOpBehavior3 : MediatR.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
+{
+    public async Task<BenchmarkResponse> Handle(
+        BenchmarkRequest request,
+        RequestHandlerDelegate<BenchmarkResponse> next,
+        CancellationToken cancellationToken)
+    {
+        return await next();
+    }
+}
+
+public class MediatRNoOpBehavior4 : MediatR.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
+{
+    public async Task<BenchmarkResponse> Handle(
+        BenchmarkRequest request,
+        RequestHandlerDelegate<BenchmarkResponse> next,
+        CancellationToken cancellationToken)
+    {
+        return await next();
+    }
+}
+
+public class MediatRNoOpBehavior5 : MediatR.IPipelineBehavior<BenchmarkRequest, BenchmarkResponse>
 {
     public async Task<BenchmarkResponse> Handle(
         BenchmarkRequest request,

@@ -76,9 +76,9 @@ services.AddMediator(cfg =>
 ```
 
 Performance
-
-- Low allocations, fast dispatch (see benchmarks in repo)
-- Scales well with many handlers
+ 
+- Native `ValueTask<T>` and `.AsTask()` support with minimal allocations (73% less memory than MediatR)
+- Direct dispatch bypass (`WithoutPipeline`) and Keyed Singletons for minimal overhead
 
 Tests
 

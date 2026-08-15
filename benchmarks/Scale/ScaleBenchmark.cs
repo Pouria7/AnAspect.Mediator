@@ -1,10 +1,10 @@
-﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Attributes;
 using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using ISgMediator = Mediator.IMediator;
 
 
-[assembly: MediatorOptions(Namespace = "AnAspect.Mediator.Benchmarks.Scale", ServiceLifetime = ServiceLifetime.Transient)]
+[assembly: MediatorOptions(ServiceLifetime = ServiceLifetime.Transient)]
 
 namespace AnAspect.Mediator.Benchmarks.Scale;
 
@@ -33,13 +33,14 @@ public class ScaleBenchmark
 
         // Setup MediatR
         var mediatrServices = new ServiceCollection();
+        mediatrServices.AddLogging();
         mediatrServices.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ScaleBenchmark).Assembly));
         _mediatrServiceProvider = mediatrServices.BuildServiceProvider();
         _mediatrMediator = _mediatrServiceProvider.GetRequiredService<MediatR.IMediator>();
 
         // Setup SourceGenerator
         var sgServices = new ServiceCollection();
-        Microsoft.Extensions.DependencyInjection.MediatorDependencyInjectionExtensions.AddMediator(sgServices);
+        sgServices.AddMediator();
 
         _sgServiceProvider = sgServices.BuildServiceProvider();
         _sgMediator = _sgServiceProvider.GetRequiredService<ISgMediator>();
@@ -67,9 +68,21 @@ public class ScaleBenchmark
     }
 
     [Benchmark]
+    public async Task<ScaleBenchmarkResponse> AnAspect_Handler50_AsTask()
+    {
+        return await _anaspectMediator.SendAsync(new BenchmarkRequest50(_testId)).AsTask();
+    }
+
+    [Benchmark]
     public async ValueTask<ScaleBenchmarkResponse> SourceGenerator_Handler50()
     {
         return await _sgMediator.Send(new BenchmarkRequest50(_testId));
+    }
+
+    [Benchmark]
+    public async Task<ScaleBenchmarkResponse> SourceGenerator_Handler50_AsTask()
+    {
+        return await _sgMediator.Send(new BenchmarkRequest50(_testId)).AsTask();
     }
 
     // Testing handler #100 (last)
@@ -86,8 +99,20 @@ public class ScaleBenchmark
     }
 
     [Benchmark]
+    public async Task<ScaleBenchmarkResponse> AnAspect_Handler100_AsTask()
+    {
+        return await _anaspectMediator.SendAsync(new BenchmarkRequest100(_testId)).AsTask();
+    }
+
+    [Benchmark]
     public async ValueTask<ScaleBenchmarkResponse> SourceGenerator_Handler100()
     {
         return await _sgMediator.Send(new BenchmarkRequest100(_testId));
+    }
+
+    [Benchmark]
+    public async Task<ScaleBenchmarkResponse> SourceGenerator_Handler100_AsTask()
+    {
+        return await _sgMediator.Send(new BenchmarkRequest100(_testId)).AsTask();
     }
 }
