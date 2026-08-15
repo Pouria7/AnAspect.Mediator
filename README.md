@@ -134,7 +134,8 @@ await _mediator.WithPipelineGroup("admin").SendAsync(command);
 // Exclude specific behavior types
 await _mediator
     .ExcludeBehavior<ILoggingBehavior>()
-    .ExcludeBehavior<IPerformanceMonitoringBehavior, AnyRequest, AnyResponse>()
+    .ExcludeBehavior<CreateUserValidation, CreateUserCommand, UserDto>()
+    .ExcludeBehavior<IGlobalValidationBehavior<AnyRequest,AnyResponse>, AnyRequest, AnyResponse>()
     .SendAsync(command);
 
 // Skip only global behaviors
@@ -267,7 +268,7 @@ services.AddMediator(cfg =>
 
 ## License
 This project is licensed under the MIT License.  
-See the [LICENSE](LICENSE) file for more details.
+See the [LICENSE](LICENSE.txt) file for more details.
 
 ## Contributing
 
