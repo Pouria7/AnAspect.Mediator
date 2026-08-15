@@ -15,7 +15,7 @@
 		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
     Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.
 
-    New: Warn or throw on duplicate handlers (DuplicateHandlerPolicy) and missing handlers for request models (MissingHandlerPolicy / UnhandledRequestPolicy).
+    New: Warn or throw on duplicate handlers (DuplicateHandlerPolicy) and missing handlers for request models (MissingHandlerPolicy).
 		</Description>
 		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
