@@ -1,4 +1,4 @@
-﻿using AnAspect.Mediator.Abstractions;
+using AnAspect.Mediator.Abstractions;
 
 namespace AnAspect.Mediator.Pipeline;
 
@@ -38,7 +38,7 @@ public readonly struct PipelineBuilder
         new(_mediator, _config.WithExcluded(typeof(TBehavior)));
 
     /// <summary>
-    /// Exclude typed behaviors implementing IPipelineBehavior<TRequest, TResponse>
+    /// Exclude typed behaviors implementing IPipelineBehavior&lt;TRequest, TResponse&gt;
     /// This allows excluding specific typed behaviors by their concrete type.
     /// </summary>
     public PipelineBuilder ExcludeBehavior<TBehavior, TRequest, TResponse>()

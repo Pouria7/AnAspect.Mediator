@@ -1,4 +1,4 @@
-﻿using AnAspect.Mediator.Abstractions;
+using AnAspect.Mediator.Abstractions;
 using AnAspect.Mediator.Pipeline;
 
 namespace AnAspect.Mediator;
@@ -28,7 +28,7 @@ public static class MediatorExtensions
         new PipelineBuilder(mediator).ExcludeBehavior<TBehavior>();
 
     /// <summary>
-    /// Exclude typed behaviors implementing IPipelineBehavior<TRequest, TResponse>
+    /// Exclude typed behaviors implementing IPipelineBehavior&lt;TRequest, TResponse&gt;
     /// This allows excluding specific typed behaviors that don't extend a marker interface.
     /// </summary>
     public static PipelineBuilder ExcludeBehavior<TBehavior, TRequest, TResponse>(this IMediator mediator)

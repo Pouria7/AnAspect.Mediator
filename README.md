@@ -2,7 +2,7 @@
 
 A high-performance mediator implementation for .NET using `ValueTask` for optimized performance and minimal memory allocation.
 
-> ⚠️ **Status**: Early development. Test coverage is ongoing. Not recommended for production use.
+> 🚀 **Status**: Release Candidate (`v1.0.0-rc.1`). High test coverage and production-ready candidate.
 
 ## Features
 

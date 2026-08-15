@@ -5,40 +5,50 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>AnAspect.Mediator</PackageId>
-		<Title>High-Performance Mediator with Advanced Pipeline Control</Title>
-		<Version>0.2.0-alpha</Version>
+		<Title>AnAspect.Mediator</Title>
+		<Version>1.0.0-rc.1</Version>
 		<Authors>Pouria Riyahi</Authors>
-		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
-    Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.</Description>
+		<Description>A lightweight, high-performance mediator implementation for .NET with advanced runtime behavior pipeline control. Features: ValueTask-first design, Behavior Groups, Selective Pipeline execution, Order control, fail-fast registration diagnostics (DuplicateHandlerPolicy and MissingHandlerPolicy), and zero runtime DI enumerations with significantly lower memory allocations compared to MediatR.</Description>
 		<PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
 		<PackageIcon>128x128.png</PackageIcon>
-		<Description>    A lightweight, high-performance mediator implementation for .NET with advanced behavior pipeline control.
-    Features: ValueTask support, Behavior Groups, Selective Pipeline execution, Order control, and significantly lower heap allocation compared to MediatR.
-
-    New: Warn or throw on duplicate handlers (DuplicateHandlerPolicy) and missing handlers for request models (MissingHandlerPolicy).
-		</Description>
 		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageTags>mediator;cqrs;pipeline;behavior;performance;dotnet</PackageTags>
+		<PackageTags>mediator;cqrs;pipeline;behavior;performance;valuetask;dotnet;csharp</PackageTags>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\assets\icons\128x128.png">
-		  <Pack>True</Pack>
-		  <PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
 		</None>
-<None Include="..\\README.NuGet.md">
-		  <Pack>True</Pack>
-		  <PackagePath>\</PackagePath>
+		<None Include="..\README.NuGet.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
 		</None>
-		<None Include="Usings.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
 	</ItemGroup>
