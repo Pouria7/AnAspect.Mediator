@@ -239,7 +239,7 @@ services.AddMediator(cfg =>
 
 ### Request Model & Missing Handler Detection
 
-During IoC registration, assemblies can be scanned for request models (`IRequest` / `IRequest<TResponse>`). If a request model does not have a matching `IRequestHandler<,>` registered, `MediatorConfiguration.MissingHandlerPolicy` (aliased as `UnhandledRequestPolicy`) controls what happens:
+During IoC registration, assemblies can be scanned for request models (`IRequest` / `IRequest<TResponse>`). If a request model does not have a matching `IRequestHandler<,>` registered, `MediatorConfiguration.MissingHandlerPolicy` controls what happens:
 
 ```csharp
 services.AddMediator(cfg =>

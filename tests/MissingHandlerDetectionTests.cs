@@ -24,19 +24,6 @@ public class MissingHandlerDetectionTests : IDisposable
     {
         var config = new MediatorConfiguration();
         Assert.Equal(RegistrationDiagnosticPolicy.Warning, config.MissingHandlerPolicy);
-        Assert.Equal(RegistrationDiagnosticPolicy.Warning, config.UnhandledRequestPolicy);
-    }
-
-    [Fact]
-    public void UnhandledRequestPolicy_GetterAndSetter_WorkAsAlias()
-    {
-        var config = new MediatorConfiguration();
-        config.UnhandledRequestPolicy = RegistrationDiagnosticPolicy.Throw;
-        Assert.Equal(RegistrationDiagnosticPolicy.Throw, config.MissingHandlerPolicy);
-        Assert.Equal(RegistrationDiagnosticPolicy.Throw, config.UnhandledRequestPolicy);
-
-        config.MissingHandlerPolicy = RegistrationDiagnosticPolicy.None;
-        Assert.Equal(RegistrationDiagnosticPolicy.None, config.UnhandledRequestPolicy);
     }
 
     [Fact]

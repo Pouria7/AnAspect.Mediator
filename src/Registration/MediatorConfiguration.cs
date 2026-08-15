@@ -41,20 +41,11 @@ public sealed class MediatorConfiguration
     public RegistrationDiagnosticPolicy DuplicateHandlerPolicy { get; set; } = RegistrationDiagnosticPolicy.Warning;
 
     /// <summary>
-    /// Controls how requests with no registered handler are handled during registration.
+    /// Controls how request models with no registered handler are handled during registration.
     /// Defaults to <see cref="RegistrationDiagnosticPolicy.Warning"/>.
     /// If set to <see cref="RegistrationDiagnosticPolicy.None"/>, request model scanning is bypassed.
     /// </summary>
     public RegistrationDiagnosticPolicy MissingHandlerPolicy { get; set; } = RegistrationDiagnosticPolicy.Warning;
-
-    /// <summary>
-    /// Alias for <see cref="MissingHandlerPolicy"/>.
-    /// </summary>
-    public RegistrationDiagnosticPolicy UnhandledRequestPolicy
-    {
-        get => MissingHandlerPolicy;
-        set => MissingHandlerPolicy = value;
-    }
 
     public MediatorConfiguration RegisterServicesFromAssembly(Assembly assembly)
     {
