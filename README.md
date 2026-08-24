@@ -1,4 +1,8 @@
 # AnAspect.Mediator
+<p align="left">
+  <img src="assets/icons/Fullsize.png" alt="AnAspect.Mediator" width="180" />
+</p>
+
 
 A high-performance mediator implementation for .NET using `ValueTask` for optimized performance and minimal memory allocation.
 
