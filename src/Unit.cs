@@ -6,7 +6,7 @@ namespace AnAspect.Mediator;
 public readonly struct Unit : IEquatable<Unit>, IComparable<Unit>
 {
     public static readonly Unit Value = new();
-    public static readonly ValueTask<Unit> ValueTask = new(Value);
+    public static ValueTask<Unit> ValueTask => new(Value);
     
     public bool Equals(Unit other) => true;
     public override bool Equals(object? obj) => obj is Unit;
