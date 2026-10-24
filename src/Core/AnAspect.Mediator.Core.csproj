@@ -28,8 +28,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="../../assets/icons/128x128.png" Pack="True" PackagePath="" />
-		<None Include="../../README.NuGet.md" Pack="True" PackagePath="" />
+		<None Include="..\..\assets\icons\128x128.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.NuGet.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
