@@ -1,5 +1,4 @@
 using AnAspect.Mediator.Notification;
-using AnAspect.Mediator.Notification.Internals;
 using AnAspect.Mediator.Notification.Registration;
 using AnAspect.Mediator.Registration;
 
@@ -88,12 +87,6 @@ public static class NotificationServiceExtensions
                 .ToArray();
 
             registry.RegisterHandlers(notificationType, orderedHandlerTypes);
-
-            var wrapperType = typeof(NotificationHandlerWrapperImpl<>).MakeGenericType(notificationType);
-            services.TryAddKeyedSingleton(
-                typeof(NotificationHandlerWrapper),
-                notificationType,
-                wrapperType);
         }
 
         services.AddSingleton(sp =>

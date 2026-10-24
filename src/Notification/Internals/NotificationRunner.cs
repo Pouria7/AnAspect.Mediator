@@ -1,47 +1,28 @@
-using AnAspect.Mediator.Notification.Registration;
-
 namespace AnAspect.Mediator.Notification.Internals;
 
-internal abstract class NotificationHandlerWrapper
+internal static class NotificationRunner
 {
-    public abstract Task<NotificationPushResult> HandleAsync(
-        INotification notification,
-        NotificationPushConfig config,
-        CancellationToken cancellationToken);
-}
-
-internal sealed class NotificationHandlerWrapperImpl<TNotification> : NotificationHandlerWrapper
-    where TNotification : INotification
-{
-    private readonly IServiceProvider _serviceProvider;
-    private readonly Type[] _handlerTypes;
-
-    public NotificationHandlerWrapperImpl(
+    public static Task<NotificationPushResult> ExecuteAsync(
         IServiceProvider serviceProvider,
-        NotificationRegistry registry)
-    {
-        _serviceProvider = serviceProvider;
-        _handlerTypes = registry.GetHandlerTypes(typeof(TNotification));
-    }
-
-    public override Task<NotificationPushResult> HandleAsync(
         INotification notification,
+        Type notificationType,
+        Type[] handlerTypes,
         NotificationPushConfig config,
         CancellationToken cancellationToken)
     {
-        var activeHandlers = FilterHandlers(_handlerTypes, config.ExcludedHandlers);
+        var activeHandlers = FilterHandlers(handlerTypes, config.ExcludedHandlers);
         if (activeHandlers.Length == 0)
             return NotificationPushResult.EmptyTask;
 
-        var typedNotification = (TNotification)notification;
-
         return config.Strategy == NotificationPublishStrategy.Concurrent
-            ? ExecuteConcurrentAsync(typedNotification, activeHandlers, config, cancellationToken)
-            : ExecuteSequentialAsync(typedNotification, activeHandlers, config, cancellationToken);
+            ? ExecuteConcurrentAsync(serviceProvider, notification, notificationType, activeHandlers, config, cancellationToken)
+            : ExecuteSequentialAsync(serviceProvider, notification, notificationType, activeHandlers, config, cancellationToken);
     }
 
-    private async Task<NotificationPushResult> ExecuteSequentialAsync(
-        TNotification notification,
+    private static async Task<NotificationPushResult> ExecuteSequentialAsync(
+        IServiceProvider serviceProvider,
+        INotification notification,
+        Type notificationType,
         Type[] activeHandlers,
         NotificationPushConfig config,
         CancellationToken cancellationToken)
@@ -79,7 +60,7 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
 
             try
             {
-                var handler = (INotificationHandler<TNotification>)_serviceProvider.GetRequiredService(handlerType);
+                var handler = (INotificationHandler)serviceProvider.GetRequiredService(handlerType);
                 task = handler.HandleAsync(notification, cancellationToken);
             }
             catch (Exception syncEx)
@@ -105,7 +86,7 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
                 var ex = UnwrapException(task.Exception!);
                 failed++;
                 failures ??= [];
-                failures.Add(new NotificationFailure(handlerType, typeof(TNotification), ex.Message, ex));
+                failures.Add(new NotificationFailure(handlerType, notificationType, ex.Message, ex));
 
                 if (config.StopOnFirstFailure && i + 1 < total)
                 {
@@ -129,7 +110,7 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
                 failures ??= [];
                 failures.Add(new NotificationFailure(
                     handlerType,
-                    typeof(TNotification),
+                    notificationType,
                     handlerResult.ErrorMessage,
                     handlerResult.Exception));
 
@@ -160,8 +141,10 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
         return result;
     }
 
-    private async Task<NotificationPushResult> ExecuteConcurrentAsync(
-        TNotification notification,
+    private static async Task<NotificationPushResult> ExecuteConcurrentAsync(
+        IServiceProvider serviceProvider,
+        INotification notification,
+        Type notificationType,
         Type[] activeHandlers,
         NotificationPushConfig config,
         CancellationToken cancellationToken)
@@ -186,7 +169,7 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
             var handlerType = activeHandlers[i];
             try
             {
-                var handler = (INotificationHandler<TNotification>)_serviceProvider.GetRequiredService(handlerType);
+                var handler = (INotificationHandler)serviceProvider.GetRequiredService(handlerType);
                 tasks[i] = handler.HandleAsync(notification, cancellationToken);
             }
             catch (Exception syncEx)
@@ -219,7 +202,7 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
                 var ex = UnwrapException(task.Exception!);
                 failed++;
                 failures ??= [];
-                failures.Add(new NotificationFailure(handlerType, typeof(TNotification), ex.Message, ex));
+                failures.Add(new NotificationFailure(handlerType, notificationType, ex.Message, ex));
                 continue;
             }
 
@@ -234,7 +217,7 @@ internal sealed class NotificationHandlerWrapperImpl<TNotification> : Notificati
                 failures ??= [];
                 failures.Add(new NotificationFailure(
                     handlerType,
-                    typeof(TNotification),
+                    notificationType,
                     handlerResult.ErrorMessage,
                     handlerResult.Exception));
             }

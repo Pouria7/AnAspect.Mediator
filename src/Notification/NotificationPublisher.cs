@@ -4,7 +4,7 @@ using AnAspect.Mediator.Notification.Registration;
 namespace AnAspect.Mediator.Notification;
 
 /// <summary>
-/// Default implementation of <see cref="INotificationPublisher"/> using Keyed Singleton handler wrappers.
+/// Default implementation of <see cref="INotificationPublisher"/> using direct <see cref="INotificationHandler"/> casting.
 /// </summary>
 public sealed class NotificationPublisher : INotificationPublisher
 {
@@ -35,10 +35,17 @@ public sealed class NotificationPublisher : INotificationPublisher
     {
         ArgumentNullException.ThrowIfNull(notification);
 
-        var wrapper = _serviceProvider.GetKeyedService<NotificationHandlerWrapper>(notification.GetType());
-        if (wrapper is null)
+        var notificationType = notification.GetType();
+        var handlerTypes = _registry.GetHandlerTypes(notificationType);
+        if (handlerTypes.Length == 0)
             return NotificationPushResult.EmptyTask;
 
-        return wrapper.HandleAsync(notification, config, cancellationToken);
+        return NotificationRunner.ExecuteAsync(
+            _serviceProvider,
+            notification,
+            notificationType,
+            handlerTypes,
+            config,
+            cancellationToken);
     }
 }

@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 		<PackageId>AnAspect.Mediator.Notification</PackageId>
 		<Title>AnAspect.Mediator.Notification</Title>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Pouria Riyahi</Authors>
 		<Description>A lightweight, high-performance notification and domain-event publisher for .NET. Features a custom awaitable with Result Pattern support, detailed execution breakdown (Total, Succeeded, Failed, Unprocessed), sequential and concurrent dispatch strategies, zero async exception rethrow overhead via SuppressThrowing, and startup registration diagnostics.</Description>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
