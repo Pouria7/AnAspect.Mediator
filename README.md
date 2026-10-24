@@ -2,7 +2,7 @@
 
 A high-performance mediator implementation for .NET using `ValueTask` for optimized performance and minimal memory allocation.
 
-> 🚀 **Status**: Release Candidate (`v1.0.0-rc.1`). High test coverage and production-ready candidate.
+> 🚀 **Status**: Stable Release (`v1.0.0`). High test coverage and production-ready.
 
 ## Features
 
@@ -14,6 +14,10 @@ A high-performance mediator implementation for .NET using `ValueTask` for optimi
 * **Type-Safe Open Generics**: Elegant generic behavior support with compile-time safety
 * **Custom Request Interfaces**: Support for ICommand, IQuery, and custom patterns
 * **Unit Support**: Built-in `Unit` type for requests without responses
+* **Notifications & Domain Events**: Dedicated [`AnAspect.Mediator.Notification`](./src/Notification/README.md) package for pub/sub notifications with sequential/concurrent execution and detailed result breakdowns
+
+> 🔔 **Need Notifications / Domain Events?**  
+> For DDD projects and in-process pub/sub notifications with a custom awaitable, Result Pattern support, and a full breakdown of `Total`, `Succeeded`, `Failed`, and `Unprocessed` handlers, see **[AnAspect.Mediator.Notification Documentation](./src/Notification/README.md)**.
 
 ## Quick Start
 
@@ -241,7 +245,7 @@ services.AddMediator(cfg =>
 * **`Throw`** — scans request models and throws `MissingHandlerException` synchronously inside `AddMediator`.
 * **`None`** — completely bypasses request model scanning for fastest startup performance.
 
-`RegistrationDiagnosticPolicy` is shared across registration-time diagnostics (`None` / `Warning` / `Throw`).
+`RegistrationDiagnosticPolicy` is shared across registration-time diagnostics (`None` / `Warning` / `Throw`) via `AnAspect.Mediator.Core`.
 
 ##  Why AnAspect.Mediator?
 
@@ -282,4 +286,6 @@ Made with ❤️ by [Pouria7](https://github.com/Pouria7)
 
 ---
 
-**NuGet Package**: [AnAspect.Mediator](https://www.nuget.org/packages/AnAspect.Mediator)
+**NuGet Packages**:
+* [AnAspect.Mediator](https://www.nuget.org/packages/AnAspect.Mediator)
+* [AnAspect.Mediator.Notification](./src/Notification/README.md)

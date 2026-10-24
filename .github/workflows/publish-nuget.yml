@@ -1,0 +1,54 @@
+name: Publish to NuGet (Trusted Publishing)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # Required for NuGet Trusted Publishing (OIDC)
+
+jobs:
+  publish:
+    name: Build, Test & Publish Packages
+    runs-on: ubuntu-latest
+    environment: release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDKs (.NET 8, 9, 10)
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            9.0.x
+            10.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build Release
+        run: dotnet build -c Release --no-restore
+
+      - name: Run Unit Tests
+        run: |
+          dotnet test -c Release --no-build tests/AnAspect.Mediator.Tests.csproj
+          dotnet test -c Release --no-build tests/Notification/AnAspect.Mediator.Notification.Tests.csproj
+
+      - name: Pack NuGet Packages
+        run: |
+          dotnet pack -c Release --no-build src/Core/AnAspect.Mediator.Core.csproj -o ./nupkgs
+          dotnet pack -c Release --no-build src/AnAspect.Mediator.csproj -o ./nupkgs
+          dotnet pack -c Release --no-build src/Notification/AnAspect.Mediator.Notification.csproj -o ./nupkgs
+
+      - name: NuGet Login via OIDC (Trusted Publishing)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ vars.NUGET_USER || 'Pouria7' }}
+
+      - name: Push Packages to NuGet.org
+        run: dotnet nuget push ./nupkgs/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

@@ -1,4 +1,4 @@
-﻿using AnAspect.Mediator.Abstractions;
+using AnAspect.Mediator.Abstractions;
 
 namespace AnAspect.Mediator.Registration;
 
@@ -69,7 +69,4 @@ internal static class HandlerScanner
                      i.GetGenericTypeDefinition() == typeof(IRequest<>) &&
                      i.GetGenericArguments()[0] == responseType);
     }
-
-    private static bool IsConcrete(this Type type) 
-        => !type.IsAbstract && !type.IsInterface && !type.IsGenericTypeDefinition;
 }

@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>AnAspect.Mediator.Notification</PackageId>
+		<Title>AnAspect.Mediator.Notification</Title>
+		<Version>1.0.0</Version>
+		<Authors>Pouria Riyahi</Authors>
+		<Description>A lightweight, high-performance notification and domain-event publisher for .NET. Features a custom awaitable with Result Pattern support, detailed execution breakdown (Total, Succeeded, Failed, Unprocessed), sequential and concurrent dispatch strategies, zero async exception rethrow overhead via SuppressThrowing, and startup registration diagnostics.</Description>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageIcon>128x128.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>mediator;notification;domain-events;ddd;result-pattern;pubsub;dotnet;csharp</PackageTags>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Core\AnAspect.Mediator.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\assets\icons\128x128.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="AnAspect.Mediator.Notification.Tests" />
+	</ItemGroup>
+
+</Project>

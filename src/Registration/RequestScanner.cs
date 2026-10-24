@@ -32,7 +32,4 @@ internal static class RequestScanner
             i.IsGenericType &&
             i.GetGenericTypeDefinition() == typeof(IRequest<>));
     }
-
-    private static bool IsConcrete(this Type type)
-        => !type.IsAbstract && !type.IsInterface && !type.IsGenericTypeDefinition;
 }

@@ -2,7 +2,7 @@
 
 A high-performance mediator for .NET with a flexible pipeline and ValueTask-first design.
 
-Status: Release Candidate (RC 1). Production-ready candidate.
+Status: Stable Release (v1.0.0). Production-ready.
 
 Install
 
