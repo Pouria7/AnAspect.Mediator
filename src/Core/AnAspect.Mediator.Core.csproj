@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<PackageId>AnAspect.Mediator.Core</PackageId>
+		<Title>AnAspect.Mediator.Core</Title>
+		<Version>1.0.0</Version>
+		<Authors>Pouria Riyahi</Authors>
+		<Description>Core shared abstractions, registration diagnostics, and scanning utilities for the AnAspect.Mediator ecosystem (AnAspect.Mediator and AnAspect.Mediator.Notification).</Description>
+		<PackageReadmeFile>README.NuGet.md</PackageReadmeFile>
+		<PackageIcon>128x128.png</PackageIcon>
+		<PackageProjectUrl>https://github.com/Pouria7/AnAspect.Mediator</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Pouria7/AnAspect.Mediator</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>mediator;cqrs;ddd;diagnostics;core;dotnet;csharp</PackageTags>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\assets\icons\128x128.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.NuGet.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="AnAspect.Mediator" />
+		<InternalsVisibleTo Include="AnAspect.Mediator.Notification" />
+		<InternalsVisibleTo Include="AnAspect.Mediator.Tests" />
+		<InternalsVisibleTo Include="AnAspect.Mediator.Notification.Tests" />
+	</ItemGroup>
+
+</Project>

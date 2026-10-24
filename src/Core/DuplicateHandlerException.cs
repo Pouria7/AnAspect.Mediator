@@ -1,19 +1,18 @@
-﻿namespace AnAspect.Mediator.Registration;
+namespace AnAspect.Mediator.Registration;
 
 /// <summary>
-/// Thrown during <c>AddMediator</c> when more than one handler is found for the same
-/// request type and <see cref="MediatorConfiguration.DuplicateHandlerPolicy"/> is set to
-/// <see cref="RegistrationDiagnosticPolicy.Throw"/>.
+/// Thrown during registration when multiple handlers are registered for the same request type
+/// and <see cref="RegistrationDiagnosticPolicy.Throw"/> is configured.
 /// </summary>
 public sealed class DuplicateHandlerException : Exception
 {
     /// <summary>
-    /// The request type that has more than one handler registered for it.
+    /// The request type that has multiple handlers registered.
     /// </summary>
     public Type RequestType { get; }
 
     /// <summary>
-    /// All handler types found for <see cref="RequestType"/>.
+    /// The concrete handler types that all handle <see cref="RequestType"/>.
     /// </summary>
     public IReadOnlyList<Type> HandlerTypes { get; }
 

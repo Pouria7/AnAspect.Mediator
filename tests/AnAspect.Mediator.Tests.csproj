@@ -8,9 +8,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="DuplicateFixtures\**;MissingHandlerFixtures\**" />
-	  <EmbeddedResource Remove="DuplicateFixtures\**;MissingHandlerFixtures\**" />
-	  <None Remove="DuplicateFixtures\**;MissingHandlerFixtures\**" />
+	  <Compile Remove="DuplicateFixtures\**;MissingHandlerFixtures\**;Notification\**" />
+	  <EmbeddedResource Remove="DuplicateFixtures\**;MissingHandlerFixtures\**;Notification\**" />
+	  <None Remove="DuplicateFixtures\**;MissingHandlerFixtures\**;Notification\**" />
 	</ItemGroup>
 
 	<ItemGroup>
