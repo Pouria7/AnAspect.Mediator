@@ -32,14 +32,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\..\assets\icons\128x128.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
+		<None Include="../../assets/icons/128x128.png" Pack="True" PackagePath="" />
+		<None Include="README.md" Pack="True" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>
