@@ -6,6 +6,11 @@
 
 A high-performance mediator implementation for .NET using `ValueTask` for optimized performance and minimal memory allocation.
 
+<p align="left">
+  <a href="https://www.nuget.org/packages/AnAspect.Mediator"><img src="https://img.shields.io/nuget/v/AnAspect.Mediator.svg?style=flat-square&label=AnAspect.Mediator" alt="NuGet: AnAspect.Mediator" height="20" /></a>
+  <a href="https://www.nuget.org/packages/AnAspect.Mediator.Notification"><img src="https://img.shields.io/nuget/v/AnAspect.Mediator.Notification.svg?style=flat-square&label=AnAspect.Mediator.Notification" alt="NuGet: AnAspect.Mediator.Notification" height="20" /></a>
+</p>
+
 > 🚀 **Status**: Stable Release (`v1.0.0`). High test coverage and production-ready.
 
 ## Features
@@ -18,10 +23,10 @@ A high-performance mediator implementation for .NET using `ValueTask` for optimi
 * **Type-Safe Open Generics**: Elegant generic behavior support with compile-time safety
 * **Custom Request Interfaces**: Support for ICommand, IQuery, and custom patterns
 * **Unit Support**: Built-in `Unit` type for requests without responses
-* **Notifications & Domain Events**: Dedicated [`AnAspect.Mediator.Notification`](./src/Notification/README.md) package for pub/sub notifications with sequential/concurrent execution and detailed result breakdowns
+* **Notifications & Domain Events**: Dedicated [`AnAspect.Mediator.Notification`](https://www.nuget.org/packages/AnAspect.Mediator.Notification) package ([Documentation](./src/Notification/README.md)) for pub/sub notifications with sequential/concurrent execution and detailed result breakdowns
 
 > 🔔 **Need Notifications / Domain Events?**  
-> For DDD projects and in-process pub/sub notifications with a custom awaitable, Result Pattern support, and a full breakdown of `Total`, `Succeeded`, `Failed`, and `Unprocessed` handlers, see **[AnAspect.Mediator.Notification Documentation](./src/Notification/README.md)**.
+> For DDD projects and in-process pub/sub notifications with a custom awaitable, Result Pattern support, and a full breakdown of `Total`, `Succeeded`, `Failed`, and `Unprocessed` handlers, see the **[AnAspect.Mediator.Notification Documentation](./src/Notification/README.md)** or grab it on **[NuGet](https://www.nuget.org/packages/AnAspect.Mediator.Notification)**.
 
 ## Quick Start
 
@@ -292,4 +297,5 @@ Made with ❤️ by [Pouria7](https://github.com/Pouria7)
 
 **NuGet Packages**:
 * [AnAspect.Mediator](https://www.nuget.org/packages/AnAspect.Mediator)
-* [AnAspect.Mediator.Notification](./src/Notification/README.md)
+* [AnAspect.Mediator.Notification](https://www.nuget.org/packages/AnAspect.Mediator.Notification) ([Documentation](./src/Notification/README.md))
+* [AnAspect.Mediator.Core](https://www.nuget.org/packages/AnAspect.Mediator.Core)

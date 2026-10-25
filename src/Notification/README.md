@@ -2,7 +2,11 @@
 
 A lightweight, high-performance notification and domain-event publisher for .NET, built to complement [`AnAspect.Mediator`](../../README.md) for DDD and event-driven architectures without external boilerplate.
 
-> 🚀 **Status**: Stable Release (`v1.0.0`).
+<p align="left">
+  <a href="https://www.nuget.org/packages/AnAspect.Mediator.Notification"><img src="https://img.shields.io/nuget/v/AnAspect.Mediator.Notification.svg?style=flat-square&label=NuGet" alt="NuGet" height="20" /></a>
+</p>
+
+> 🚀 **Status**: Stable Release (`v1.0.1`). Available on [NuGet](https://www.nuget.org/packages/AnAspect.Mediator.Notification).
 
 ## Features
 
@@ -158,6 +162,12 @@ await publisher
 // Or call EnsureSuccess() manually on the result:
 result.EnsureSuccess();
 ```
+
+---
+
+## NuGet Package
+
+* [AnAspect.Mediator.Notification on NuGet](https://www.nuget.org/packages/AnAspect.Mediator.Notification)
 
 ---
 
